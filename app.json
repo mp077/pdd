@@ -1,0 +1,12 @@
+{
+  "plugins": [
+    "expo-router"
+  ],
+  "extra": {
+    "router": {},
+    "eas": {
+      "projectId": "ddf12407-b288-496b-9ec0-e063864e9e70"
+    }
+  },
+  "owner": "mann1090"
+}
