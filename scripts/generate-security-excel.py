@@ -67,3 +67,50 @@ endpoints = [
 pd.DataFrame(endpoints).to_excel(f"{output_dir}/endpoint-inventory.xlsx", sheet_name="Endpoint Inventory", index=False)
 
 print(f"Successfully generated Excel reports in {output_dir}/")
+
+# Generate GitHub Step Summary Markdown
+summary_md = ""
+
+# Parse Gitleaks
+secrets = []
+try:
+    with open("gitleaks-results.json", "r") as f:
+        secrets = json.load(f)
+except Exception:
+    pass
+
+if secrets:
+    summary_md += "## 🛑 Gitleaks detected secrets 🛑\n\n"
+    summary_md += "| Rule ID | Commit | Start Line | Author | Date | Email | File |\n"
+    summary_md += "|---|---|---|---|---|---|---|\n"
+    for s in secrets:
+        rule = s.get("RuleID", "")
+        commit = str(s.get("Commit", ""))[:7]
+        line = s.get("StartLine", "")
+        author = s.get("Author", "")
+        date = str(s.get("Date", ""))[:10]
+        email = s.get("Email", "")
+        file = s.get("File", "")
+        summary_md += f"| {rule} | {commit} | {line} | {author} | {date} | {email} | {file} |\n"
+    summary_md += "\n"
+
+summary_md += "## 🔒 Security Assessment Summary\n\n"
+summary_md += "| Severity | Count |\n"
+summary_md += "|---|---|\n"
+summary_md += f"| 🔴 Critical | {risk_summary['Critical']} |\n"
+summary_md += f"| 🟠 High | {risk_summary['High']} |\n"
+summary_md += f"| 🟡 Medium | {risk_summary['Medium']} |\n"
+summary_md += f"| 🔵 Low | {risk_summary['Low']} |\n"
+summary_md += f"| **Total** | **{sum(risk_summary.values())}** |\n\n"
+
+score = 100 - (risk_summary['Critical'] * 10) - (risk_summary['High'] * 5) - (risk_summary['Medium'] * 2) - (risk_summary['Low'] * 1)
+score = max(0, score)
+status = "⚠️ Not Production Ready" if score < 80 else "✅ Production Ready"
+
+summary_md += f"**Overall Security Score: {score}/100 — {status}**\n\n"
+
+step_summary_file = os.environ.get("GITHUB_STEP_SUMMARY")
+if step_summary_file:
+    with open(step_summary_file, "a", encoding="utf-8") as f:
+        f.write(summary_md)
+    print("Successfully wrote to GITHUB_STEP_SUMMARY")
