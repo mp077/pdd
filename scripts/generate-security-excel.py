@@ -15,6 +15,9 @@ try:
     with open("semgrep-results.json", "r") as f:
         semgrep_data = json.load(f)
         for result in semgrep_data.get("results", []):
+            path = result.get("path", "")
+            if "selenium-tests" in path or "appium-tests" in path or "tests" in path:
+                continue
             sev = result.get("extra", {}).get("severity", "Medium").title()
             if sev == "Error": sev = "High"
             if sev == "Warning": sev = "Medium"
@@ -35,6 +38,9 @@ try:
     with open("trivy-results.json", "r") as f:
         trivy_data = json.load(f)
         for result in trivy_data.get("Results", []):
+            target = result.get("Target", "")
+            if "selenium-tests" in target or "appium-tests" in target:
+                continue
             for vuln in result.get("Vulnerabilities", []):
                 sev = vuln.get("Severity", "Medium").title()
                 dependencies.append({
