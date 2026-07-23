@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { Settings, Bell, LogOut, Home, Users, ClipboardList, Activity, BrainCircuit, FileText } from 'lucide-react-native';
+import { Settings, LogOut, Home, Users, ClipboardList, Activity, BrainCircuit, FileText, Calendar } from 'lucide-react-native';
 import { useAuth } from '../../context/AuthContext';
 import { useResponsive } from '../../hooks/useResponsive';
 
@@ -23,136 +23,125 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation, activeRoute, setActiveRou
     }
   };
 
-  const getInitials = (fullName: string) => {
+  const getDisplayLastName = (fullName: string) => {
     try {
-      return fullName
-        .split(' ')
-        .map((n) => n[0])
-        .join('')
-        .toUpperCase()
-        .slice(0, 2);
+      const parts = fullName.trim().split(' ');
+      let lastName = parts[parts.length - 1];
+      if (parts.length > 1 && (parts[0].toLowerCase().startsWith('dr'))) {
+        lastName = parts[parts.length - 1];
+      }
+      return lastName.startsWith('Dr.') ? lastName : `Dr. ${lastName}`;
     } catch (e) {
-      return 'DR';
+      return 'Dr. Mann';
     }
   };
 
   return (
-    <View style={styles.container}>
-      {/* Profile Card */}
-      <View style={styles.profileCard}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>
-            {user?.name ? getInitials(user.name) : 'DR'}
-          </Text>
-        </View>
-        <Text style={styles.drName}>{user?.name || 'Doctor'}</Text>
-        <Text style={styles.drSpecialty}>{user?.specialization || 'General Practitioner'}</Text>
-        <View style={styles.clinicBadge}>
-          <Text style={styles.clinicName}>{user?.clinic_name || 'DentPulse Clinical'}</Text>
+    <View style={[styles.container, isMobile && styles.containerMobile]}>
+      {/* Brand & Profile Section */}
+      <View style={styles.brandSection}>
+        <Text style={styles.brandTitle}>DentPulse AI</Text>
+        <Text style={styles.doctorName}>
+          {user?.name ? getDisplayLastName(user.name) : 'Dr. Mann'}
+        </Text>
+        <Text style={styles.specialty}>
+          {user?.specialization || 'General Dentist'}
+        </Text>
+        <View style={styles.statusRow}>
+          <View style={styles.statusDot} />
+          <Text style={styles.statusText}>Online</Text>
         </View>
       </View>
 
-      {/* Main SaaS Navigation (Only visible on Web/Desktop viewports) */}
-      {!isMobile && setActiveRoute && (
-        <View style={styles.webMenuSection}>
-          <Text style={styles.sectionLabel}>Clinical Workspace</Text>
-          
-          <TouchableOpacity
-            style={[styles.menuItem, activeRoute === 'Dashboard' && styles.menuItemActive]}
-            onPress={() => handleNav('Dashboard', 'Dashboard')}
-          >
-            <Home size={18} color={activeRoute === 'Dashboard' ? '#3b82f6' : '#64748b'} />
-            <Text style={[styles.menuText, activeRoute === 'Dashboard' && styles.menuTextActive]}>
-              Dashboard
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.menuItem, activeRoute === 'Patients' && styles.menuItemActive]}
-            onPress={() => handleNav('Patients', 'Patients')}
-          >
-            <Users size={18} color={activeRoute === 'Patients' ? '#3b82f6' : '#64748b'} />
-            <Text style={[styles.menuText, activeRoute === 'Patients' && styles.menuTextActive]}>
-              Patients Registry
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.menuItem, activeRoute === 'Planning' && styles.menuItemActive]}
-            onPress={() => handleNav('Planning', 'Treatment')}
-          >
-            <ClipboardList size={18} color={activeRoute === 'Planning' ? '#3b82f6' : '#64748b'} />
-            <Text style={[styles.menuText, activeRoute === 'Planning' && styles.menuTextActive]}>
-              Treatment Planning
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.menuItem, activeRoute === 'Monitoring' && styles.menuItemActive]}
-            onPress={() => handleNav('Monitoring', 'Monitoring')}
-          >
-            <Activity size={18} color={activeRoute === 'Monitoring' ? '#3b82f6' : '#64748b'} />
-            <Text style={[styles.menuText, activeRoute === 'Monitoring' && styles.menuTextActive]}>
-              Post-Implant Monitor
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.menuItem, activeRoute === 'Decision' && styles.menuItemActive]}
-            onPress={() => handleNav('Decision', 'Decision')}
-          >
-            <BrainCircuit size={18} color={activeRoute === 'Decision' ? '#3b82f6' : '#64748b'} />
-            <Text style={[styles.menuText, activeRoute === 'Decision' && styles.menuTextActive]}>
-              Clinical Insights
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.menuItem, activeRoute === 'Reports' && styles.menuItemActive]}
-            onPress={() => handleNav('Reports', 'Reports')}
-          >
-            <FileText size={18} color={activeRoute === 'Reports' ? '#3b82f6' : '#64748b'} />
-            <Text style={[styles.menuText, activeRoute === 'Reports' && styles.menuTextActive]}>
-              Clinical Reports
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
-
-      {/* Account Settings / Utility Sections */}
-      <View style={styles.menuSection}>
-        {!isMobile && setActiveRoute && <Text style={styles.sectionLabel}>System Settings</Text>}
+      {/* Main Navigation */}
+      <View style={styles.navSection}>
+        <Text style={styles.sectionLabel}>Navigation</Text>
+        
+        <TouchableOpacity
+          style={[styles.navItem, activeRoute === 'Dashboard' && styles.navItemActive]}
+          onPress={() => handleNav('Dashboard', 'Dashboard')}
+        >
+          <Home size={16} color={activeRoute === 'Dashboard' ? '#2563EB' : '#475569'} />
+          <Text style={[styles.navText, activeRoute === 'Dashboard' && styles.navTextActive]}>
+            Dashboard
+          </Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.menuItem}
-          onPress={() => handleNav('Settings', 'Settings')}
+          style={[styles.navItem, activeRoute === 'Patients' && styles.navItemActive]}
+          onPress={() => handleNav('Patients', 'Patients')}
         >
-          <View style={styles.iconBox}>
-            <Settings size={20} color="#64748b" />
-          </View>
-          <Text style={styles.menuText}>Account Settings</Text>
+          <Users size={16} color={activeRoute === 'Patients' ? '#2563EB' : '#475569'} />
+          <Text style={[styles.navText, activeRoute === 'Patients' && styles.navTextActive]}>
+            Patients
+          </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem}>
-          <View style={styles.iconBox}>
-            <Bell size={20} color="#64748b" />
-          </View>
-          <Text style={styles.menuText}>Notifications</Text>
-          <View style={styles.badge} />
+        <TouchableOpacity
+          style={[styles.navItem, activeRoute === 'Appointments' && styles.navItemActive]}
+          onPress={() => handleNav('Appointments', 'Dashboard')} // Map to actual screen later
+        >
+          <Calendar size={16} color={activeRoute === 'Appointments' ? '#2563EB' : '#475569'} />
+          <Text style={[styles.navText, activeRoute === 'Appointments' && styles.navTextActive]}>
+            Appointments
+          </Text>
         </TouchableOpacity>
 
-        <View style={styles.divider} />
+        <TouchableOpacity
+          style={[styles.navItem, activeRoute === 'Planning' && styles.navItemActive]}
+          onPress={() => handleNav('Planning', 'Treatment')}
+        >
+          <ClipboardList size={16} color={activeRoute === 'Planning' ? '#2563EB' : '#475569'} />
+          <Text style={[styles.navText, activeRoute === 'Planning' && styles.navTextActive]}>
+            Treatment Planning
+          </Text>
+        </TouchableOpacity>
 
-        <TouchableOpacity style={styles.logoutItem} onPress={logout}>
-          <View style={[styles.iconBox, { backgroundColor: '#fef2f2' }]}>
-            <LogOut size={20} color="#ef4444" />
-          </View>
-          <Text style={styles.logoutText}>Logout</Text>
+        <TouchableOpacity
+          style={[styles.navItem, activeRoute === 'Monitoring' && styles.navItemActive]}
+          onPress={() => handleNav('Monitoring', 'Monitoring')}
+        >
+          <Activity size={16} color={activeRoute === 'Monitoring' ? '#2563EB' : '#475569'} />
+          <Text style={[styles.navText, activeRoute === 'Monitoring' && styles.navTextActive]}>
+            Post Implant Monitoring
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.navItem, activeRoute === 'Reports' && styles.navItemActive]}
+          onPress={() => handleNav('Reports', 'Reports')}
+        >
+          <FileText size={16} color={activeRoute === 'Reports' ? '#2563EB' : '#475569'} />
+          <Text style={[styles.navText, activeRoute === 'Reports' && styles.navTextActive]}>
+            Clinical Reports
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.navItem, activeRoute === 'Decision' && styles.navItemActive]}
+          onPress={() => handleNav('Decision', 'Decision')}
+        >
+          <BrainCircuit size={16} color={activeRoute === 'Decision' ? '#2563EB' : '#475569'} />
+          <Text style={[styles.navText, activeRoute === 'Decision' && styles.navTextActive]}>
+            AI Insights
+          </Text>
         </TouchableOpacity>
       </View>
 
-      <View style={styles.footer}>
-        <Text style={styles.version}>DentPulse AI • v1.0.4</Text>
+      {/* Utility Section */}
+      <View style={styles.bottomSection}>
+        <TouchableOpacity
+          style={[styles.navItem, activeRoute === 'Settings' && styles.navItemActive]}
+          onPress={() => handleNav('Settings', 'Settings')}
+        >
+          <Settings size={16} color="#475569" />
+          <Text style={styles.navText}>Settings</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.navItem} onPress={logout}>
+          <LogOut size={16} color="#475569" />
+          <Text style={styles.navText}>Logout</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -161,140 +150,93 @@ const Sidebar: React.FC<SidebarProps> = ({ navigation, activeRoute, setActiveRou
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: 240,
     backgroundColor: '#ffffff',
-    padding: 24,
-    paddingTop: 60,
     borderRightWidth: 1,
-    borderRightColor: '#f1f5f9',
+    borderRightColor: '#E2E8F0',
+    paddingVertical: 24,
+    paddingHorizontal: 16,
   },
-  profileCard: {
-    backgroundColor: '#3b82f6',
-    borderRadius: 24,
-    padding: 24,
-    alignItems: 'center',
-    marginBottom: 28,
-    shadowColor: '#3b82f6',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.2,
-    shadowRadius: 15,
-    elevation: 10,
+  containerMobile: {
+    width: '100%',
   },
-  avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 24,
-    backgroundColor: '#ffffff',
-    justifyContent: 'center',
-    alignItems: 'center',
+  brandSection: {
+    marginBottom: 32,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9',
+    paddingBottom: 24,
+  },
+  brandTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#0F172A',
     marginBottom: 16,
   },
-  avatarText: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#3b82f6',
-  },
-  drName: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#ffffff',
-    marginBottom: 4,
-    textAlign: 'center',
-  },
-  drSpecialty: {
-    fontSize: 12,
+  doctorName: {
+    fontSize: 14,
     fontWeight: '600',
-    color: '#dbeafe',
-    marginBottom: 12,
-    textAlign: 'center',
+    color: '#1E293B',
+    marginBottom: 2,
   },
-  clinicBadge: {
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 10,
-  },
-  clinicName: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: '#ffffff',
-    textAlign: 'center',
-  },
-  webMenuSection: {
-    gap: 4,
-    marginBottom: 20,
-  },
-  sectionLabel: {
-    fontSize: 10,
-    fontWeight: '800',
-    color: '#94a3b8',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginLeft: 12,
+  specialty: {
+    fontSize: 12,
+    color: '#64748B',
     marginBottom: 8,
   },
-  menuSection: {
-    flex: 1,
-  },
-  menuItem: {
+  statusRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    borderRadius: 12,
-    marginBottom: 4,
   },
-  menuItemActive: {
-    backgroundColor: '#eff6ff',
-  },
-  iconBox: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: '#f8fafc',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 14,
-  },
-  menuText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#475569',
-    flex: 1,
-  },
-  menuTextActive: {
-    color: '#3b82f6',
-  },
-  badge: {
+  statusDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#ef4444',
+    backgroundColor: '#22C55E',
+    marginRight: 6,
   },
-  divider: {
-    height: 1,
-    backgroundColor: '#f1f5f9',
-    marginVertical: 16,
+  statusText: {
+    fontSize: 12,
+    color: '#64748B',
+    fontWeight: '500',
   },
-  logoutItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 12,
+  navSection: {
+    flex: 1,
   },
-  logoutText: {
-    fontSize: 14,
-    fontWeight: '800',
-    color: '#ef4444',
-  },
-  footer: {
-    alignItems: 'center',
-    paddingBottom: 20,
-  },
-  version: {
+  sectionLabel: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#cbd5e1',
-    letterSpacing: 1,
+    color: '#94A3B8',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 12,
+    paddingHorizontal: 8,
+  },
+  navItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    borderRadius: 6,
+    marginBottom: 2,
+  },
+  navItemActive: {
+    backgroundColor: '#EFF6FF',
+  },
+  navText: {
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#475569',
+    marginLeft: 12,
+  },
+  navTextActive: {
+    color: '#2563EB',
+    fontWeight: '600',
+  },
+  bottomSection: {
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+    paddingTop: 16,
+    marginTop: 'auto',
   },
 });
 

@@ -1,15 +1,40 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, StyleSheet } from 'react-native';
-import { Home, Calendar, Activity, UserCircle, MapPin } from 'lucide-react-native';
+import { View, StyleSheet, Animated, Vibration, TouchableWithoutFeedback } from 'react-native';
+import { Home, CalendarCheck, Sparkles, UserCircle, MapPin, MessageCircle } from 'lucide-react-native';
+import ToothIcon from '../components/icons/ToothIcon';
 
 import PatientHome from '../screens/patient/PatientHome';
-import PatientLocation from '../screens/patient/PatientLocation';
 import PatientAppointments from '../screens/patient/PatientAppointments';
+import PatientChatbot from '../screens/patient/PatientChatbot';
 import PatientRecovery from '../screens/patient/PatientRecovery';
 import PatientProfile from '../screens/patient/PatientProfile';
+import PatientMedicalRecords from '../screens/patient/PatientMedicalRecords';
+import PatientNotifications from '../screens/patient/PatientNotifications';
 
 const Tab = createBottomTabNavigator();
+
+const AnimatedTabIcon = ({ focused, color, IconComponent, activeColor, activeBg }: any) => {
+  const scale = React.useRef(new Animated.Value(focused ? 1.05 : 1)).current;
+
+  React.useEffect(() => {
+    Animated.spring(scale, {
+      toValue: focused ? 1.15 : 1,
+      friction: 5,
+      useNativeDriver: true,
+    }).start();
+  }, [focused]);
+
+  return (
+    <Animated.View style={[
+      styles.iconBox,
+      focused && { backgroundColor: activeBg },
+      { transform: [{ scale }] }
+    ]}>
+      <IconComponent size={22} color={focused ? activeColor : color} strokeWidth={focused ? 3 : 2} focused={focused} />
+    </Animated.View>
+  );
+};
 
 const PatientNavigator = () => (
   <Tab.Navigator
@@ -28,61 +53,51 @@ const PatientNavigator = () => (
         shadowOpacity: 0.06,
         shadowRadius: 12,
       },
-      tabBarActiveTintColor: '#3b82f6',
+      tabBarActiveTintColor: '#2563eb', // Darker, bold blue
       tabBarInactiveTintColor: '#94a3b8',
       headerShown: false,
       tabBarLabelStyle: {
         fontSize: 11,
-        fontWeight: '700',
+        fontWeight: '800', // Bolder font
+        marginTop: 4,
       },
     }}
+    screenListeners={({ navigation, route }) => ({
+      tabPress: (e) => {
+        Vibration.vibrate(40);
+      },
+    })}
   >
     <Tab.Screen
       name="PatientHomeTab"
       component={PatientHome}
       options={{
         tabBarLabel: 'Home',
-        tabBarIcon: ({ color, focused }) => (
-          <View style={[styles.iconBox, focused && styles.iconBoxActive]}>
-            <Home size={focused ? 22 : 20} color={color} />
-          </View>
-        ),
+        tabBarIcon: (props) => <AnimatedTabIcon {...props} IconComponent={Home} activeColor="#2563eb" activeBg="#eff6ff" />
       }}
     />
     <Tab.Screen
-      name="PatientLocationTab"
-      component={PatientLocation}
+      name="PatientChatbotTab"
+      component={PatientChatbot}
       options={{
-        tabBarLabel: 'Location',
-        tabBarIcon: ({ color, focused }) => (
-          <View style={[styles.iconBox, focused && styles.iconBoxActive]}>
-            <MapPin size={focused ? 22 : 20} color={color} />
-          </View>
-        ),
+        tabBarLabel: 'Dent AI',
+        tabBarIcon: (props) => <AnimatedTabIcon {...props} IconComponent={Sparkles} activeColor="#a855f7" activeBg="#faf5ff" />
       }}
     />
     <Tab.Screen
       name="PatientAppointmentsTab"
       component={PatientAppointments}
       options={{
-        tabBarLabel: 'Appointments',
-        tabBarIcon: ({ color, focused }) => (
-          <View style={[styles.iconBox, focused && styles.iconBoxActive]}>
-            <Calendar size={focused ? 22 : 20} color={color} />
-          </View>
-        ),
+        tabBarLabel: 'Visits',
+        tabBarIcon: (props) => <AnimatedTabIcon {...props} IconComponent={CalendarCheck} activeColor="#16a34a" activeBg="#f0fdf4" />
       }}
     />
     <Tab.Screen
       name="PatientRecoveryTab"
       component={PatientRecovery}
       options={{
-        tabBarLabel: 'Follow-Up',
-        tabBarIcon: ({ color, focused }) => (
-          <View style={[styles.iconBox, focused && styles.iconBoxActive]}>
-            <Activity size={focused ? 22 : 20} color={color} />
-          </View>
-        ),
+        tabBarLabel: 'My Implant',
+        tabBarIcon: (props) => <AnimatedTabIcon {...props} IconComponent={ToothIcon} activeColor="#ea580c" activeBg="#fff7ed" />
       }}
     />
     <Tab.Screen
@@ -90,11 +105,23 @@ const PatientNavigator = () => (
       component={PatientProfile}
       options={{
         tabBarLabel: 'Profile',
-        tabBarIcon: ({ color, focused }) => (
-          <View style={[styles.iconBox, focused && styles.iconBoxActive]}>
-            <UserCircle size={focused ? 22 : 20} color={color} />
-          </View>
-        ),
+        tabBarIcon: (props) => <AnimatedTabIcon {...props} IconComponent={UserCircle} activeColor="#475569" activeBg="#f8fafc" />
+      }}
+    />
+    <Tab.Screen
+      name="PatientMedicalRecords"
+      component={PatientMedicalRecords}
+      options={{
+        tabBarButton: () => null,
+        tabBarItemStyle: { display: 'none' },
+      }}
+    />
+    <Tab.Screen
+      name="PatientNotifications"
+      component={PatientNotifications}
+      options={{
+        tabBarButton: () => null,
+        tabBarItemStyle: { display: 'none' },
       }}
     />
   </Tab.Navigator>
@@ -102,11 +129,15 @@ const PatientNavigator = () => (
 
 const styles = StyleSheet.create({
   iconBox: {
-    padding: 4,
-    borderRadius: 10,
+    padding: 6,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 44,
+    height: 44,
   },
   iconBoxActive: {
-    backgroundColor: '#eff6ff',
+    backgroundColor: '#eff6ff', // Light blue background for active
   },
 });
 

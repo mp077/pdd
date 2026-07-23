@@ -1,0 +1,97 @@
+name: Comprehensive Security Review
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  security-scans:
+    name: Run Security Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies for Excel generator
+        run: pip install pandas openpyxl
+
+      # 1. SAST SCANNING (Semgrep)
+      - name: Run SAST Scan (Semgrep)
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: "p/default"
+          generateSarif: "1"
+        continue-on-error: true
+        
+      - name: Save Semgrep JSON (for Excel parsing)
+        run: semgrep scan --config="p/default" --json -o semgrep-results.json || true
+
+      # 2. DEPENDENCY SCANNING (Trivy)
+      - name: Run Dependency Scan (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          ignore-unfixed: true
+          format: 'json'
+          output: 'trivy-results.json'
+          severity: 'CRITICAL,HIGH,MEDIUM,LOW'
+        continue-on-error: true
+
+      # 3. SECRET SCANNING (Gitleaks)
+      - name: Run Secret Scan (Gitleaks)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+        
+      - name: Save Gitleaks JSON
+        run: gitleaks detect --source . -v --report-format json --report-path gitleaks-results.json || true
+
+      # 4. DAST / API SECURITY (OWASP ZAP)
+      # Note: To run DAST, your application must be running. 
+      # This example starts the backend using Docker/npm before scanning.
+      - name: Start Application for DAST
+        run: |
+          # Replace this with the command to start your backend
+          npm install
+          npm run start &
+          sleep 10 # Wait for app to start
+        continue-on-error: true
+
+      - name: Run DAST Scan (OWASP ZAP)
+        uses: zaproxy/action-baseline@v0.10.0
+        with:
+          target: 'http://localhost:8000' # Replace with your API URL
+          format: json
+          cmd_options: '-J zap-results.json'
+        continue-on-error: true
+        
+      # GENERATE EXCEL REPORTS
+      - name: Generate Excel Reports
+        run: python scripts/generate-security-excel.py
+        continue-on-error: true
+
+      # UPLOAD ARTIFACTS
+      - name: Upload Security Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Security_Test_Reports
+          path: |
+            Vulnerability_Test_Results/findings.xlsx
+            Vulnerability_Test_Results/endpoint-inventory.xlsx
+            semgrep-results.json
+            trivy-results.json
+            gitleaks-results.json
+            zap-results.json
+          retention-days: 14

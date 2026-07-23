@@ -1,0 +1,17 @@
+{
+  "name": "dentpulse-appium-tests",
+  "version": "1.0.0",
+  "description": "E2E Mobile App Testing for DentPulse AI using Appium and WebdriverIO",
+  "main": "index.js",
+  "scripts": {
+    "test": "wdio run wdio.conf.js"
+  },
+  "dependencies": {
+    "@wdio/allure-reporter": "^8.16.0",
+    "@wdio/cli": "^8.16.0",
+    "@wdio/local-runner": "^8.16.0",
+    "@wdio/mocha-framework": "^8.16.0",
+    "@wdio/spec-reporter": "^8.16.0",
+    "exceljs": "^4.4.0"
+  }
+}

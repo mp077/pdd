@@ -34,7 +34,7 @@ interface Props {
 const GENDERS = ['Male', 'Female', 'Other'];
 
 const PatientRegister: React.FC<Props> = ({ onNavigateToLogin, onNavigateToOtp }) => {
-  const { registerPatient } = useAuth();
+  const { register } = useAuth();
 
   const [form, setForm] = useState({
     name: '',
@@ -83,17 +83,19 @@ const PatientRegister: React.FC<Props> = ({ onNavigateToLogin, onNavigateToOtp }
 
     setLoading(true);
     try {
-      const result = await registerPatient({
+      const result = await register({
         name: form.name.trim(),
         age: form.age ? parseInt(form.age, 10) : null,
         gender: form.gender || null,
         email: form.email.trim().toLowerCase(),
         phone_number: form.phone_number.trim() || null,
         password: form.password,
+        role: 'patient'
       });
 
       if (result.success) {
-        onNavigateToOtp();
+        alert("Registration successful! Please login.");
+        onNavigateToLogin();
       } else {
         setError(result.message || 'Registration failed. Please try again.');
       }
@@ -130,7 +132,7 @@ const PatientRegister: React.FC<Props> = ({ onNavigateToLogin, onNavigateToOtp }
 
           <GlassCard style={styles.card}>
             {/* ── Error Banner ── */}
-            {error && (
+            {!!error && (
               <View style={styles.errorBox}>
                 <Text style={styles.errorText}>⚠ {error}</Text>
               </View>
@@ -319,7 +321,7 @@ const PatientRegister: React.FC<Props> = ({ onNavigateToLogin, onNavigateToOtp }
                   )}
                 </TouchableOpacity>
               </View>
-              {form.confirm && form.confirm !== form.password && (
+              {!!form.confirm && form.confirm !== form.password && (
                 <Text style={styles.fieldError}>Passwords do not match</Text>
               )}
             </View>

@@ -156,10 +156,8 @@ const DecisionSupport: React.FC = () => {
         setPatients(mapped);
         setSelectedPatient(mapped[0]);
       } else {
-        // Fallback default mock data
-        const fallbacks = Object.values(CLINICAL_PATIENT_RECORDS);
-        setPatients(fallbacks);
-        setSelectedPatient(fallbacks[0]);
+        setPatients([]);
+        setSelectedPatient(null);
       }
     } catch (e) {
       console.error(e);

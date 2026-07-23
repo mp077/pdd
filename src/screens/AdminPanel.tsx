@@ -16,10 +16,12 @@ import { api } from '../utils/api';
 import { useResponsive } from '../hooks/useResponsive';
 import GlassCard from '../components/premium/GlassCard';
 import StatusPill from '../components/premium/StatusPill';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const AdminPanel: React.FC = () => {
   const { token, logout, user } = useAuth();
   const { isMobile } = useResponsive();
+  const insets = useSafeAreaInsets();
 
   const [activeTab, setActiveTab] = useState<'pending' | 'approved' | 'history'>('pending');
   const [loading, setLoading] = useState(false);
@@ -45,7 +47,7 @@ const AdminPanel: React.FC = () => {
   const loadApproved = async () => {
     if (!token) return;
     setLoading(true);
-    const data = await api.getApprovedDoctors(token);
+    const data = await api.getApprovedDoctorsAdmin(token);
     setApprovedDoctors(data);
     setLoading(false);
   };
@@ -115,8 +117,11 @@ const AdminPanel: React.FC = () => {
     );
   });
 
+  // Force a safe top margin for iOS Dynamic Island if insets fail to calculate
+  const safeTop = Platform.OS === 'ios' ? Math.max(insets.top, 60) : Platform.OS === 'android' ? Math.max(insets.top, 30) : 0;
+
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { paddingTop: safeTop }]}>
       {/* Admin Top Navbar */}
       <View style={styles.navbar}>
         <View style={styles.navBranding}>
@@ -136,7 +141,7 @@ const AdminPanel: React.FC = () => {
       </View>
 
       {/* Admin Workspace Tabs */}
-      <View style={styles.tabBar}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabBar}>
         <TouchableOpacity
           style={[styles.tabItem, activeTab === 'pending' && styles.tabItemActive]}
           onPress={() => setActiveTab('pending')}
@@ -169,7 +174,7 @@ const AdminPanel: React.FC = () => {
             Security Log
           </Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
 
       {/* Tab Contents */}
       <ScrollView style={styles.workspace} contentContainerStyle={styles.workspaceScroll}>
@@ -232,6 +237,10 @@ const AdminPanel: React.FC = () => {
                         <View style={styles.detailRow}>
                           <Award size={14} color="#94a3b8" />
                           <Text style={styles.detailVal}>License ID: {doc.license_id}</Text>
+                        </View>
+                        <View style={styles.detailRow}>
+                          <Text style={styles.detailLabel}>Phone:</Text>
+                          <Text style={styles.detailVal}>{doc.phone_number || 'N/A'}</Text>
                         </View>
                         <View style={styles.detailRow}>
                           <Text style={styles.detailLabel}>Registered:</Text>
@@ -313,6 +322,10 @@ const AdminPanel: React.FC = () => {
                         <View style={styles.detailRow}>
                           <Award size={14} color="#94a3b8" />
                           <Text style={styles.detailVal}>License: {doc.license_id}</Text>
+                        </View>
+                        <View style={styles.detailRow}>
+                          <Text style={styles.detailLabel}>Phone:</Text>
+                          <Text style={styles.detailVal}>{doc.phone_number || 'N/A'}</Text>
                         </View>
                         <View style={styles.detailRow}>
                           <Text style={styles.detailLabel}>Verification SLA:</Text>

@@ -1,0 +1,739 @@
+{
+  "stats": {
+    "suites": 6,
+    "tests": 10,
+    "passes": 3,
+    "pending": 0,
+    "failures": 7,
+    "start": "2026-07-23T20:14:14.344Z",
+    "end": "2026-07-23T20:15:18.448Z",
+    "duration": 64104,
+    "testsRegistered": 13,
+    "passPercent": 23.076923076923077,
+    "pendingPercent": 0,
+    "other": 3,
+    "hasOther": true,
+    "skipped": 3,
+    "hasSkipped": true
+  },
+  "results": [
+    {
+      "uuid": "83e33b03-7181-4b83-b446-3760ce80f347",
+      "title": "",
+      "fullFile": "",
+      "file": "",
+      "beforeHooks": [],
+      "afterHooks": [
+        {
+          "title": "\"after each\" hook: afterEach in \"{root}\"",
+          "fullTitle": "\"after each\" hook: afterEach in \"{root}\"",
+          "timedOut": false,
+          "duration": 47,
+          "state": null,
+          "speed": null,
+          "pass": false,
+          "fail": false,
+          "pending": false,
+          "context": null,
+          "code": "const test = this.currentTest;\nif (!test) return;\nconst status = test.state === 'passed' ? 'Pass' : 'Fail';\nconst errorMessage = test.err ? test.err.message : '';\n\nawait updateExcelTestResult('selenium', test.title, status, errorMessage);",
+          "err": {},
+          "uuid": "716992b6-ee1d-4f35-afe1-a27141e72c58",
+          "parentUUID": "83e33b03-7181-4b83-b446-3760ce80f347",
+          "isHook": true,
+          "skipped": false
+        }
+      ],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "b0be85d7-e680-49e1-9925-5b07b9bf3be0",
+          "title": "Admin Portal Tests",
+          "fullFile": "C:\\Users\\Mann\\Downloads\\pdd\\selenium-tests\\tests\\admin-tests.js",
+          "file": "\\tests\\admin-tests.js",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook in \"Admin Portal Tests\"",
+              "fullTitle": "Admin Portal Tests \"before all\" hook in \"Admin Portal Tests\"",
+              "timedOut": false,
+              "duration": 11070,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "driver = await DriverUtils.initDriver();\nadminPage = new AdminPage(driver);\n\n// Go directly to admin login if routed, or click the admin shield from main login\nawait driver.get('http://localhost:8081');\n\n// Wait for main login to load, then click Admin Shield\nconst shieldBtn = await driver.wait(until.elementLocated(By.css('[data-testid=\"admin-shield-btn\"]')), 5000);\nawait shieldBtn.click();\n\n// Login as admin\nconst emailInput = await driver.wait(until.elementLocated(By.css('[data-testid=\"admin-email-input\"]')), 5000);\nawait emailInput.sendKeys('admin@dentpulse.com');\n\nconst pwdInput = await driver.findElement(By.css('[data-testid=\"admin-password-input\"]'));\nawait pwdInput.sendKeys('123456');\n\nconst loginBtn = await driver.findElement(By.css('[data-testid=\"admin-login-button\"]'));\nawait loginBtn.click();\n\n// Wait longer for admin console to load (login API might be slow)\nawait driver.sleep(3000);\nawait adminPage.isLoaded();",
+              "err": {},
+              "uuid": "8ca7cda8-960b-4ec1-ab21-ccb3c8d02007",
+              "parentUUID": "b0be85d7-e680-49e1-9925-5b07b9bf3be0",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after all\" hook in \"Admin Portal Tests\"",
+              "fullTitle": "Admin Portal Tests \"after all\" hook in \"Admin Portal Tests\"",
+              "timedOut": false,
+              "duration": 351,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "if (driver) await driver.quit();",
+              "err": {},
+              "uuid": "b26bfa81-ed51-43c0-b170-c01838896143",
+              "parentUUID": "b0be85d7-e680-49e1-9925-5b07b9bf3be0",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [
+            {
+              "title": "[TC_WEB_025] should login to Admin Portal successfully",
+              "fullTitle": "Admin Portal Tests [TC_WEB_025] should login to Admin Portal successfully",
+              "timedOut": false,
+              "duration": 5126,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "const isLoaded = await adminPage.isLoaded();\nexpect(isLoaded).to.be.true;",
+              "err": {
+                "message": "AssertionError: expected false to be true",
+                "estack": "AssertionError: expected false to be true\n    at Context.<anonymous> (tests\\admin-tests.js:43:31)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)",
+                "diff": "- false\n+ true\n"
+              },
+              "uuid": "28c07191-4950-49ac-91fc-b360b9d21c66",
+              "parentUUID": "b0be85d7-e680-49e1-9925-5b07b9bf3be0",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "[TC_WEB_026] should navigate to Doctors Management",
+              "fullTitle": "Admin Portal Tests [TC_WEB_026] should navigate to Doctors Management",
+              "timedOut": false,
+              "duration": 7,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "await adminPage.goToDoctors();\n// Just verify navigation didn't crash\nexpect(true).to.be.true;",
+              "err": {
+                "message": "NoSuchElementError: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"[data-testid=\"admin-nav-doctors\"]\"}\n  (Session info: chrome=151.0.7922.34)",
+                "estack": "NoSuchElementError: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"[data-testid=\"admin-nav-doctors\"]\"}\n  (Session info: chrome=151.0.7922.34)\n    at Object.throwDecodedError (node_modules\\selenium-webdriver\\lib\\error.js:523:15)\n    at parseHttpResponse (node_modules\\selenium-webdriver\\lib\\http.js:527:13)\n    at Executor.execute (node_modules\\selenium-webdriver\\lib\\http.js:459:28)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Driver.execute (node_modules\\selenium-webdriver\\lib\\webdriver.js:745:17)\n    at async toWireValue (node_modules\\selenium-webdriver\\lib\\webdriver.js:149:15)\n    at async C:\\Users\\Mann\\Downloads\\pdd\\selenium-tests\\node_modules\\selenium-webdriver\\lib\\webdriver.js:195:16\n    at async forEachKey (node_modules\\selenium-webdriver\\lib\\webdriver.js:189:9)\n    at async convertKeys (node_modules\\selenium-webdriver\\lib\\webdriver.js:194:3)\n    at async Driver.execute (node_modules\\selenium-webdriver\\lib\\webdriver.js:743:22)\n    at async AdminPage.goToDoctors (pages\\AdminPage.js:21:9)\n    at async Context.<anonymous> (tests\\admin-tests.js:47:9)",
+                "diff": null
+              },
+              "uuid": "e187a10c-5702-44b0-ab01-518c30e2c70e",
+              "parentUUID": "b0be85d7-e680-49e1-9925-5b07b9bf3be0",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "28c07191-4950-49ac-91fc-b360b9d21c66",
+            "e187a10c-5702-44b0-ab01-518c30e2c70e"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 5133,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 40000
+        },
+        {
+          "uuid": "5df7239e-e9a2-42a1-ae53-a662b7e33027",
+          "title": "Dashboard Tests",
+          "fullFile": "C:\\Users\\Mann\\Downloads\\pdd\\selenium-tests\\tests\\dashboard-tests.js",
+          "file": "\\tests\\dashboard-tests.js",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook in \"Dashboard Tests\"",
+              "fullTitle": "Dashboard Tests \"before all\" hook in \"Dashboard Tests\"",
+              "timedOut": false,
+              "duration": 3810,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "driver = await DriverUtils.initDriver();\nloginPage = new LoginPage(driver);\ndashboardPage = new DashboardPage(driver);\n\n// Ensure logged in\nawait loginPage.open();\nawait loginPage.enterCredentials('m@p.com', '123456');\nawait loginPage.clickLogin();\nawait dashboardPage.isLoaded();",
+              "err": {},
+              "uuid": "c5fc0e15-c538-4525-8de8-3a8a18469e23",
+              "parentUUID": "5df7239e-e9a2-42a1-ae53-a662b7e33027",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after all\" hook for \"[TC_WEB_006] KPI cards should display numeric values\"",
+              "fullTitle": "Dashboard Tests \"after all\" hook for \"[TC_WEB_006] KPI cards should display numeric values\"",
+              "timedOut": false,
+              "duration": 5072,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "await dashboardPage.logout();\nif (driver) await driver.quit();",
+              "err": {
+                "message": "TimeoutError: Waiting for element to be located By(css selector, [data-testid=\"logout-button\"])\nWait timed out after 5015ms",
+                "estack": "TimeoutError: Waiting for element to be located By(css selector, [data-testid=\"logout-button\"])\nWait timed out after 5015ms\n    at C:\\Users\\Mann\\Downloads\\pdd\\selenium-tests\\node_modules\\selenium-webdriver\\lib\\webdriver.js:929:22\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)",
+                "diff": null
+              },
+              "uuid": "0b252f30-9b5a-4762-abf9-bb085c17e907",
+              "parentUUID": "5df7239e-e9a2-42a1-ae53-a662b7e33027",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [
+            {
+              "title": "[TC_WEB_005] Dashboard should load successfully",
+              "fullTitle": "Dashboard Tests [TC_WEB_005] Dashboard should load successfully",
+              "timedOut": false,
+              "duration": 9,
+              "state": "passed",
+              "speed": "fast",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const isLoaded = await dashboardPage.isLoaded();\nexpect(isLoaded).to.be.true;",
+              "err": {},
+              "uuid": "a62eefd5-12c8-437d-8e06-6bf74839d819",
+              "parentUUID": "5df7239e-e9a2-42a1-ae53-a662b7e33027",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "[TC_WEB_006] KPI cards should display numeric values",
+              "fullTitle": "Dashboard Tests [TC_WEB_006] KPI cards should display numeric values",
+              "timedOut": false,
+              "duration": 41,
+              "state": "passed",
+              "speed": "medium",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const apptKpi = await driver.wait(until.elementLocated({ css: '[data-testid=\"kpi-appointments-count\"]' }), 5000);\nconst waitingKpi = await driver.wait(until.elementLocated({ css: '[data-testid=\"kpi-waiting-count\"]' }), 5000);\nconst acceptedKpi = await driver.wait(until.elementLocated({ css: '[data-testid=\"kpi-accepted-count\"]' }), 5000);\nconst alertsKpi = await driver.wait(until.elementLocated({ css: '[data-testid=\"kpi-alerts-count\"]' }), 5000);\n\nconst apptVal = await apptKpi.getText();\nexpect(apptVal).to.match(/\\d+/);\n\nconst waitVal = await waitingKpi.getText();\nexpect(waitVal).to.match(/\\d+/);",
+              "err": {},
+              "uuid": "9ebf9595-c15c-4005-97f9-31ca2f48c851",
+              "parentUUID": "5df7239e-e9a2-42a1-ae53-a662b7e33027",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "a62eefd5-12c8-437d-8e06-6bf74839d819",
+            "9ebf9595-c15c-4005-97f9-31ca2f48c851"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 50,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 30000
+        },
+        {
+          "uuid": "9e1007d1-5bb1-4d2f-a4b1-c90aaf299863",
+          "title": "DentPulse Authentication Tests",
+          "fullFile": "C:\\Users\\Mann\\Downloads\\pdd\\selenium-tests\\tests\\login-tests.js",
+          "file": "\\tests\\login-tests.js",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook in \"DentPulse Authentication Tests\"",
+              "fullTitle": "DentPulse Authentication Tests \"before all\" hook in \"DentPulse Authentication Tests\"",
+              "timedOut": false,
+              "duration": 990,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "driver = await DriverUtils.initDriver();\nloginPage = new LoginPage(driver);\ndashboardPage = new DashboardPage(driver);",
+              "err": {},
+              "uuid": "c8e7a1cf-06f4-4a0d-b123-03b447352066",
+              "parentUUID": "9e1007d1-5bb1-4d2f-a4b1-c90aaf299863",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after all\" hook in \"DentPulse Authentication Tests\"",
+              "fullTitle": "DentPulse Authentication Tests \"after all\" hook in \"DentPulse Authentication Tests\"",
+              "timedOut": false,
+              "duration": 677,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "if (driver) await driver.quit();",
+              "err": {},
+              "uuid": "4de2f02f-be26-4e3b-a28a-71b47321df31",
+              "parentUUID": "9e1007d1-5bb1-4d2f-a4b1-c90aaf299863",
+              "isHook": true,
+              "skipped": false
+            },
+            {
+              "title": "\"after each\" hook in \"DentPulse Authentication Tests\"",
+              "fullTitle": "DentPulse Authentication Tests \"after each\" hook in \"DentPulse Authentication Tests\"",
+              "timedOut": false,
+              "duration": 98,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "if (this.currentTest.state === 'failed') {\n    await DriverUtils.takeScreenshot(driver, this.currentTest.title);\n}",
+              "err": {},
+              "uuid": "93a145bf-93ea-4c49-89cf-e9dcfeae4f63",
+              "parentUUID": "9e1007d1-5bb1-4d2f-a4b1-c90aaf299863",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [
+            {
+              "title": "[TC_WEB_001] should successfully login as a Doctor",
+              "fullTitle": "DentPulse Authentication Tests [TC_WEB_001] should successfully login as a Doctor",
+              "timedOut": false,
+              "duration": 1851,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await loginPage.open();\nconst isReady = await loginPage.isLoaded();\nexpect(isReady).to.be.true;\nawait loginPage.enterCredentials('m@p.com', '123456');\nawait loginPage.clickLogin();\nconst isLoaded = await dashboardPage.isLoaded();\nexpect(isLoaded).to.be.true;",
+              "err": {},
+              "uuid": "ab17b985-d70c-4a0c-9474-2e1a707c866e",
+              "parentUUID": "9e1007d1-5bb1-4d2f-a4b1-c90aaf299863",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "[TC_WEB_004] should logout successfully",
+              "fullTitle": "DentPulse Authentication Tests [TC_WEB_004] should logout successfully",
+              "timedOut": false,
+              "duration": 5108,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "await dashboardPage.logout();\n// Verify we are back on login page\nawait driver.wait(until.elementLocated(loginPage.loginBtn), 10000);\nexpect(true).to.be.true;",
+              "err": {
+                "message": "TimeoutError: Waiting for element to be located By(css selector, [data-testid=\"logout-button\"])\nWait timed out after 5062ms",
+                "estack": "TimeoutError: Waiting for element to be located By(css selector, [data-testid=\"logout-button\"])\nWait timed out after 5062ms\n    at C:\\Users\\Mann\\Downloads\\pdd\\selenium-tests\\node_modules\\selenium-webdriver\\lib\\webdriver.js:929:22\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)",
+                "diff": null
+              },
+              "uuid": "c6aae95f-1ef9-48cf-b3ba-933ec4f2eaf3",
+              "parentUUID": "9e1007d1-5bb1-4d2f-a4b1-c90aaf299863",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "ab17b985-d70c-4a0c-9474-2e1a707c866e"
+          ],
+          "failures": [
+            "c6aae95f-1ef9-48cf-b3ba-933ec4f2eaf3"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 6959,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 30000
+        },
+        {
+          "uuid": "ae83af98-e881-4258-972a-03b18b28d67f",
+          "title": "Patients Module Tests",
+          "fullFile": "C:\\Users\\Mann\\Downloads\\pdd\\selenium-tests\\tests\\patient-tests.js",
+          "file": "\\tests\\patient-tests.js",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook for \"[TC_WEB_010] should open Patients screen from Dashboard\"",
+              "fullTitle": "Patients Module Tests \"before all\" hook for \"[TC_WEB_010] should open Patients screen from Dashboard\"",
+              "timedOut": false,
+              "duration": 1043,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "driver = await DriverUtils.initDriver();\nloginPage = new LoginPage(driver);\ndashboardPage = new DashboardPage(driver);\npatientsPage = new PatientsPage(driver);\n\nawait loginPage.open();\nawait loginPage.enterCredentials('m@p.com', '123456');\nawait loginPage.clickLogin();\nawait dashboardPage.isLoaded();",
+              "err": {
+                "message": "WebDriverError: unknown error: JavaScript code failed\nfrom unknown command: 'Runtime.evaluate' wasn't found\n  (Session info: chrome=151.0.7922.34)",
+                "estack": "WebDriverError: unknown error: JavaScript code failed\nfrom unknown command: 'Runtime.evaluate' wasn't found\n  (Session info: chrome=151.0.7922.34)\n    at Object.throwDecodedError (node_modules\\selenium-webdriver\\lib\\error.js:523:15)\n    at parseHttpResponse (node_modules\\selenium-webdriver\\lib\\http.js:527:13)\n    at Executor.execute (node_modules\\selenium-webdriver\\lib\\http.js:459:28)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Driver.execute (node_modules\\selenium-webdriver\\lib\\webdriver.js:745:17)\n    at async DriverUtils.initDriver (utils\\driver.js:9:5)\n    at async Context.<anonymous> (tests\\patient-tests.js:16:18)",
+                "diff": null
+              },
+              "uuid": "46ddc4b2-2ecc-49d5-a3ad-36c942ddbb96",
+              "parentUUID": "ae83af98-e881-4258-972a-03b18b28d67f",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after all\" hook for \"[TC_WEB_012] should open patient profile on click\"",
+              "fullTitle": "Patients Module Tests \"after all\" hook for \"[TC_WEB_012] should open patient profile on click\"",
+              "timedOut": false,
+              "duration": 0,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "await dashboardPage.logout();\nif (driver) await driver.quit();",
+              "err": {
+                "message": "TypeError: Cannot read properties of undefined (reading 'logout')",
+                "estack": "TypeError: Cannot read properties of undefined (reading 'logout')\n    at Context.<anonymous> (tests\\patient-tests.js:28:29)\n    at process.processImmediate (node:internal/timers:504:21)",
+                "diff": null
+              },
+              "uuid": "4a25c8bc-f204-49a6-9184-370325da8d5a",
+              "parentUUID": "ae83af98-e881-4258-972a-03b18b28d67f",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [
+            {
+              "title": "[TC_WEB_010] should open Patients screen from Dashboard",
+              "fullTitle": "Patients Module Tests [TC_WEB_010] should open Patients screen from Dashboard",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await driver.wait(until.elementLocated(dashboardPage.patientsNav), 5000);\nawait driver.findElement(dashboardPage.patientsNav).click();\n\nconst isLoaded = await patientsPage.isLoaded();\nexpect(isLoaded).to.be.true;",
+              "err": {},
+              "uuid": "eba67b71-b6da-441b-98b4-6f0b71630bf7",
+              "parentUUID": "ae83af98-e881-4258-972a-03b18b28d67f",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "[TC_WEB_011] should be able to search for a patient",
+              "fullTitle": "Patients Module Tests [TC_WEB_011] should be able to search for a patient",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await patientsPage.searchPatient('Test');\n// If there are results, the cards should be visible\nconst cards = await driver.findElements(By.css('[data-testid^=\"patient-card-\"]'));\nexpect(cards).to.not.be.undefined;",
+              "err": {},
+              "uuid": "92a483eb-f162-4d31-ab27-30c5b1439ca8",
+              "parentUUID": "ae83af98-e881-4258-972a-03b18b28d67f",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "[TC_WEB_012] should open patient profile on click",
+              "fullTitle": "Patients Module Tests [TC_WEB_012] should open patient profile on click",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "await patientsPage.searchPatient(''); // clear search\nconst clicked = await patientsPage.clickFirstPatientCard();\nexpect(clicked).to.be.true;\n\n// Wait for PatientProfileDoctor screen header\nawait driver.wait(until.elementLocated(By.xpath('//*[contains(text(), \"Treatment Timeline\")]')), 10000);\nexpect(true).to.be.true;\n\n// Go back to patients\nawait driver.findElement(dashboardPage.patientsNav).click();",
+              "err": {},
+              "uuid": "9c2a496f-4413-46e0-97f1-3a6352483b61",
+              "parentUUID": "ae83af98-e881-4258-972a-03b18b28d67f",
+              "isHook": false,
+              "skipped": true
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [
+            "eba67b71-b6da-441b-98b4-6f0b71630bf7",
+            "92a483eb-f162-4d31-ab27-30c5b1439ca8",
+            "9c2a496f-4413-46e0-97f1-3a6352483b61"
+          ],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 40000
+        },
+        {
+          "uuid": "81745d62-bd65-4dd0-a42a-345ef7f5a7f9",
+          "title": "Prescription Workspace Tests",
+          "fullFile": "C:\\Users\\Mann\\Downloads\\pdd\\selenium-tests\\tests\\prescription-tests.js",
+          "file": "\\tests\\prescription-tests.js",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook in \"Prescription Workspace Tests\"",
+              "fullTitle": "Prescription Workspace Tests \"before all\" hook in \"Prescription Workspace Tests\"",
+              "timedOut": false,
+              "duration": 3568,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "driver = await DriverUtils.initDriver();\nloginPage = new LoginPage(driver);\nrxPage = new PrescriptionPage(driver);\n\nawait loginPage.open();\nawait loginPage.enterCredentials('m@p.com', '123456');\nawait loginPage.clickLogin();\nawait driver.wait(until.elementLocated(By.xpath('//*[text()=\"Appointments\" or contains(text(), \"Appointments\")]')), 10000);",
+              "err": {},
+              "uuid": "b664eed6-fa15-4c1b-9f71-d74cde2556c5",
+              "parentUUID": "81745d62-bd65-4dd0-a42a-345ef7f5a7f9",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after all\" hook in \"Prescription Workspace Tests\"",
+              "fullTitle": "Prescription Workspace Tests \"after all\" hook in \"Prescription Workspace Tests\"",
+              "timedOut": false,
+              "duration": 439,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "if (driver) await driver.quit();",
+              "err": {},
+              "uuid": "03a71a1c-2028-4abc-a2fb-82d6ecfada52",
+              "parentUUID": "81745d62-bd65-4dd0-a42a-345ef7f5a7f9",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [
+            {
+              "title": "[TC_WEB_020] should navigate to Prescription Workspace",
+              "fullTitle": "Prescription Workspace Tests [TC_WEB_020] should navigate to Prescription Workspace",
+              "timedOut": false,
+              "duration": 5354,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// Go to Prescription via bottom nav\nawait driver.findElement(By.xpath('//*[contains(text(), \"Prescription\")]')).click();\n\nconst searchInput = await driver.wait(until.elementLocated(rxPage.medSearchInput), 5000);\nexpect(searchInput).to.not.be.undefined;",
+              "err": {
+                "message": "TimeoutError: Waiting for element to be located By(css selector, [data-testid=\"medication-search-input\"])\nWait timed out after 5069ms",
+                "estack": "TimeoutError: Waiting for element to be located By(css selector, [data-testid=\"medication-search-input\"])\nWait timed out after 5069ms\n    at C:\\Users\\Mann\\Downloads\\pdd\\selenium-tests\\node_modules\\selenium-webdriver\\lib\\webdriver.js:929:22\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)",
+                "diff": null
+              },
+              "uuid": "155e067e-0693-4ed7-9acf-46772ad3ab60",
+              "parentUUID": "81745d62-bd65-4dd0-a42a-345ef7f5a7f9",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "[TC_WEB_021] should search for medication",
+              "fullTitle": "Prescription Workspace Tests [TC_WEB_021] should search for medication",
+              "timedOut": false,
+              "duration": 5072,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "await rxPage.searchMedication('Amoxicillin');\n\n// Wait for suggestion list\nconst suggestions = await driver.wait(until.elementsLocated(By.xpath('//*[contains(text(), \"Amoxicillin\")]')), 5000);\nexpect(suggestions.length).to.be.greaterThan(0);",
+              "err": {
+                "message": "TimeoutError: Waiting for element to be located By(css selector, [data-testid=\"medication-search-input\"])\nWait timed out after 5072ms",
+                "estack": "TimeoutError: Waiting for element to be located By(css selector, [data-testid=\"medication-search-input\"])\nWait timed out after 5072ms\n    at C:\\Users\\Mann\\Downloads\\pdd\\selenium-tests\\node_modules\\selenium-webdriver\\lib\\webdriver.js:929:22\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)",
+                "diff": null
+              },
+              "uuid": "ff555da8-17cb-4aea-9ddd-a61a86b22cb2",
+              "parentUUID": "81745d62-bd65-4dd0-a42a-345ef7f5a7f9",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "155e067e-0693-4ed7-9acf-46772ad3ab60",
+            "ff555da8-17cb-4aea-9ddd-a61a86b22cb2"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 10426,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 40000
+        },
+        {
+          "uuid": "009dbe89-9c95-4067-9157-522181fc1cb3",
+          "title": "Treatment Planning Tests",
+          "fullFile": "C:\\Users\\Mann\\Downloads\\pdd\\selenium-tests\\tests\\treatment-tests.js",
+          "file": "\\tests\\treatment-tests.js",
+          "beforeHooks": [
+            {
+              "title": "\"before all\" hook in \"Treatment Planning Tests\"",
+              "fullTitle": "Treatment Planning Tests \"before all\" hook in \"Treatment Planning Tests\"",
+              "timedOut": false,
+              "duration": 6415,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "driver = await DriverUtils.initDriver();\nloginPage = new LoginPage(driver);\nplanPage = new TreatmentPlanPage(driver);\n\nawait loginPage.open();\nawait loginPage.enterCredentials('m@p.com', '123456');\nawait loginPage.clickLogin();\nawait driver.wait(until.elementLocated(By.xpath('//*[text()=\"Appointments\" or contains(text(), \"Appointments\")]')), 10000);",
+              "err": {},
+              "uuid": "af6259c1-d0f7-40e0-aa89-49f031d19ad1",
+              "parentUUID": "009dbe89-9c95-4067-9157-522181fc1cb3",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "afterHooks": [
+            {
+              "title": "\"after all\" hook in \"Treatment Planning Tests\"",
+              "fullTitle": "Treatment Planning Tests \"after all\" hook in \"Treatment Planning Tests\"",
+              "timedOut": false,
+              "duration": 396,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "if (driver) await driver.quit();",
+              "err": {},
+              "uuid": "370b9a0a-5c04-4068-8e5a-5481841a8070",
+              "parentUUID": "009dbe89-9c95-4067-9157-522181fc1cb3",
+              "isHook": true,
+              "skipped": false
+            }
+          ],
+          "tests": [
+            {
+              "title": "[TC_WEB_015] should navigate to Patient Profile and open Treatment Planning",
+              "fullTitle": "Treatment Planning Tests [TC_WEB_015] should navigate to Patient Profile and open Treatment Planning",
+              "timedOut": false,
+              "duration": 5887,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// Go to Patients\nawait driver.findElement(By.xpath('//*[contains(text(), \"Patients\")]')).click();\n\n// Wait for a patient card and click\nconst card = await driver.wait(until.elementLocated(By.css('[data-testid^=\"patient-card-\"]')), 5000);\nawait card.click();\n\n// Now inside patient profile, wait for \"Plan Treatment\" button\nconst planBtn = await driver.wait(until.elementLocated(By.xpath('//*[contains(text(), \"Plan Treatment\") or contains(text(), \"New Plan\")]')), 5000);\nawait planBtn.click();\n\n// Verify we are on planning page\nconst boneHeight = await driver.wait(until.elementLocated(planPage.boneHeightInput), 5000);\nexpect(boneHeight).to.not.be.undefined;",
+              "err": {
+                "message": "TimeoutError: Waiting for element to be located By(css selector, [data-testid^=\"patient-card-\"])\nWait timed out after 5175ms",
+                "estack": "TimeoutError: Waiting for element to be located By(css selector, [data-testid^=\"patient-card-\"])\nWait timed out after 5175ms\n    at C:\\Users\\Mann\\Downloads\\pdd\\selenium-tests\\node_modules\\selenium-webdriver\\lib\\webdriver.js:929:22\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)",
+                "diff": null
+              },
+              "uuid": "bd337546-41ad-4264-bd05-58a90c2f9180",
+              "parentUUID": "009dbe89-9c95-4067-9157-522181fc1cb3",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "[TC_WEB_016] should generate an AI Treatment Plan successfully",
+              "fullTitle": "Treatment Planning Tests [TC_WEB_016] should generate an AI Treatment Plan successfully",
+              "timedOut": false,
+              "duration": 10,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "await planPage.enterBoneData('14.0', '6.5', '1100');\nawait planPage.generatePlan();\n\n// Wait for results to appear\nconst resultHeader = await driver.wait(until.elementLocated(By.xpath('//*[contains(text(), \"AI Recommendation\")]')), 15000);\nexpect(resultHeader).to.not.be.undefined;",
+              "err": {
+                "message": "NoSuchElementError: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"[data-testid=\"bone-height-input\"]\"}\n  (Session info: chrome=151.0.7922.34)",
+                "estack": "NoSuchElementError: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"[data-testid=\"bone-height-input\"]\"}\n  (Session info: chrome=151.0.7922.34)\n    at Object.throwDecodedError (node_modules\\selenium-webdriver\\lib\\error.js:523:15)\n    at parseHttpResponse (node_modules\\selenium-webdriver\\lib\\http.js:527:13)\n    at Executor.execute (node_modules\\selenium-webdriver\\lib\\http.js:459:28)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async Driver.execute (node_modules\\selenium-webdriver\\lib\\webdriver.js:745:17)\n    at async TreatmentPlanPage.enterBoneData (pages\\TreatmentPlanPage.js:32:24)\n    at async Context.<anonymous> (tests\\treatment-tests.js:46:9)",
+                "diff": null
+              },
+              "uuid": "a8bbbf57-a2df-40e3-8b4e-96937af5d429",
+              "parentUUID": "009dbe89-9c95-4067-9157-522181fc1cb3",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "bd337546-41ad-4264-bd05-58a90c2f9180",
+            "a8bbbf57-a2df-40e3-8b4e-96937af5d429"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 5897,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 40000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 60000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "10.8.2"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "Selenium_Web_Report",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.4"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "reports",
+        "reportFilename": "Selenium_Web_Report",
+        "html": "true",
+        "json": "true"
+      },
+      "version": "6.3.2"
+    }
+  }
+}

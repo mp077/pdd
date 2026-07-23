@@ -1,568 +1,370 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  KeyboardAvoidingView,
+import React, { useState, useRef } from 'react';
+import { 
+  View, 
+  Text, 
+  TextInput, 
+  TouchableOpacity, 
+  StyleSheet, 
+  KeyboardAvoidingView, 
   Platform,
-  ActivityIndicator,
-  Image,
+  ScrollView,
+  ActivityIndicator
 } from 'react-native';
-import { Mail, Lock, Eye, EyeOff, BrainCircuit, Activity, ShieldCheck, Heart } from 'lucide-react-native';
 import { useAuth } from '../context/AuthContext';
+import { Stethoscope, User, HeartPulse, Eye, EyeOff, Shield } from 'lucide-react-native';
 import { useResponsive } from '../hooks/useResponsive';
-import GlassCard from '../components/premium/GlassCard';
-import { LogoLoader } from '../components/shared/LogoLoader';
 
-interface LoginScreenProps {
+interface LoginProps {
   onNavigateToRegister: () => void;
-  onNavigateToOtp: () => void;
-  onNavigateToPending: () => void;
   onNavigateToForgotPassword: () => void;
   onNavigateToPatientRegister: () => void;
+  onNavigateToAdminLogin: () => void;
 }
 
-const Login: React.FC<LoginScreenProps> = ({
-  onNavigateToRegister,
-  onNavigateToOtp,
-  onNavigateToPending,
-  onNavigateToForgotPassword,
-  onNavigateToPatientRegister,
-}) => {
-  const { login, loginPatient, setPendingVerificationEmail } = useAuth();
-  const { isMobile } = useResponsive();
+const ROLES = [
+  { id: 'doctor', title: 'Doctor', icon: Stethoscope },
+  { id: 'patient', title: 'Patient', icon: User },
+];
 
-  const [role, setRole] = useState<'doctor' | 'admin' | 'patient'>('doctor');
+export default function Login({ onNavigateToRegister, onNavigateToForgotPassword, onNavigateToAdminLogin }: LoginProps) {
+  const { login, loginPatient } = useAuth();
+  const { isMobile } = useResponsive();
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [secureText, setSecureText] = useState(true);
+  const [role, setRole] = useState('doctor');
+  
+  const [showPassword, setShowPassword] = useState(false);
+  const [isFocused, setIsFocused] = useState<'email' | 'password' | null>(null);
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [error, setError] = useState('');
 
-  const handleSignIn = async () => {
+  const passwordRef = useRef<TextInput>(null);
+
+  const handleLogin = async () => {
+    setError('');
     if (!email || !password) {
-      setErrorMsg('Please enter both email and password.');
+      setError('Please enter both email and password.');
       return;
     }
-    setErrorMsg(null);
+
     setLoading(true);
     try {
+      let result;
       if (role === 'patient') {
-        const result = await loginPatient(email.trim().toLowerCase(), password);
-        if (!result.success) {
-          setErrorMsg(result.message || 'Login failed.');
-        } else if (result.status === 'needs_otp') {
-          onNavigateToOtp();
-        }
+        result = await loginPatient(email, password);
       } else {
-        const result = await login(email.trim().toLowerCase(), password, role);
-        if (result.success) {
-          if (result.status === 'needs_otp') onNavigateToOtp();
-          else if (result.status === 'pending_approval') onNavigateToPending();
-        } else {
-          setErrorMsg(result.message || 'Login failed.');
-          if (result.status === 'needs_otp') {
-            setPendingVerificationEmail(email.trim().toLowerCase());
-            onNavigateToOtp();
-          } else if (result.status === 'rejected') {
-            setErrorMsg('Your clinical request has been rejected by the administrator.');
-          }
-        }
+        result = await login(email, password, role as any);
       }
-    } catch (e: any) {
-      setErrorMsg(e.message || 'An unexpected error occurred.');
-    } finally {
-      setLoading(false);
+
+      if (!result.success) {
+        setError(result.message || 'Invalid credentials.');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Invalid credentials or account locked.');
     }
+    setLoading(false);
   };
 
-  const renderForm = () => (
-    <View style={styles.formContainer}>
-      {/* Branding */}
-      <View style={styles.brandingBox}>
-        <Image 
-          source={require('../assets/logo.png')} 
-          style={{ width: 80, height: 80, borderRadius: 40, marginBottom: 8 }} 
-          resizeMode="contain" 
-        />
-        <Text style={styles.brandTitle}>DentPulse AI</Text>
-      </View>
-
-      {/* Role Switcher Pill */}
-      <View style={styles.switcherBg}>
-        <TouchableOpacity
-          style={[styles.switcherBtn, role === 'doctor' && styles.switcherBtnActive]}
-          onPress={() => {
-            setRole('doctor');
-            setErrorMsg(null);
-          }}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.switcherText, role === 'doctor' && styles.switcherTextActive]}>
-            Doctor
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.switcherBtn, role === 'admin' && styles.switcherBtnActive]}
-          onPress={() => {
-            setRole('admin');
-            setErrorMsg(null);
-          }}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.switcherText, role === 'admin' && styles.switcherTextActive]}>
-            Admin
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.switcherBtn, role === 'patient' && styles.switcherBtnActive]}
-          onPress={() => {
-            setRole('patient');
-            setErrorMsg(null);
-          }}
-          activeOpacity={0.8}
-        >
-          <Text style={[styles.switcherText, role === 'patient' && styles.switcherTextActive]}>
-            Patient
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Error Output */}
-      {errorMsg && (
-        <View style={styles.errorBubble}>
-          <Text style={styles.errorText}>{errorMsg}</Text>
-        </View>
-      )}
-
-      {/* Input Fields */}
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Email Address</Text>
-        <View style={styles.inputWrapper}>
-          <Mail size={18} color="#94a3b8" />
-          <TextInput
-            style={styles.input}
-            placeholder="doctor@clinic.com"
-            placeholderTextColor="#cbd5e1"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={email}
-            onChangeText={(text) => {
-              setEmail(text);
-              setErrorMsg(null);
-            }}
-          />
-        </View>
-      </View>
-
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Password</Text>
-        <View style={styles.inputWrapper}>
-          <Lock size={18} color="#94a3b8" />
-          <TextInput
-            style={styles.input}
-            placeholder="••••••••"
-            placeholderTextColor="#cbd5e1"
-            secureTextEntry={secureText}
-            autoCapitalize="none"
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              setErrorMsg(null);
-            }}
-          />
-          <TouchableOpacity onPress={() => setSecureText(!secureText)} style={styles.eyeBtn}>
-            {secureText ? <Eye size={18} color="#94a3b8" /> : <EyeOff size={18} color="#94a3b8" />}
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <TouchableOpacity 
-        style={styles.forgotBtn} 
-        onPress={onNavigateToForgotPassword}
-        activeOpacity={0.7}
-      >
-        <Text style={styles.forgotText}>Forgot password?</Text>
-      </TouchableOpacity>
-
-      {/* Action Button */}
-      <TouchableOpacity
-        style={[styles.signInBtn, loading && styles.disabledBtn]}
-        onPress={handleSignIn}
-        disabled={loading}
-        activeOpacity={0.8}
-      >
-        {loading ? (
-          <LogoLoader size={30} />
-        ) : (
-          <Text style={styles.signInBtnText}>Sign In</Text>
-        )}
-      </TouchableOpacity>
-
-      {/* Navigation Footer */}
-      {role === 'doctor' && (
-        <View style={styles.footer}>
-          <Text style={styles.footerLabel}>New to DentPulse?</Text>
-          <TouchableOpacity onPress={onNavigateToRegister}>
-            <Text style={styles.footerAction}>Register Clinical Account</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-      {role === 'patient' && (
-        <View style={styles.footer}>
-          <Text style={styles.footerLabel}>No account?</Text>
-          <TouchableOpacity onPress={onNavigateToPatientRegister}>
-            <Text style={styles.footerAction}>Create Patient Account</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-    </View>
-  );
-
-  if (isMobile) {
-    return (
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.mobileRoot}
-      >
-        <ScrollView contentContainerStyle={styles.mobileScroll}>
-          <View style={styles.cardContainer}>
-            <GlassCard style={styles.formCard}>{renderForm()}</GlassCard>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    );
-  }
-
-  // Web / Desktop Premium Split Screen Layout
   return (
-    <View style={styles.webRoot}>
-      {/* Left visual panel */}
-      <View style={styles.webLeft}>
-        <View style={styles.decorativeGradient} />
-        <View style={styles.webLeftContent}>
-          <View style={styles.statsWrapper}>
-            <Activity size={36} color="#60a5fa" />
-            <Text style={styles.heroTitle}>DentPulse AI</Text>
-            <Text style={styles.heroHeadline}>Clinical Intelligence & Post-Implant Prediction</Text>
+    <KeyboardAvoidingView 
+      style={styles.container} 
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+        
+        <View style={styles.floatingCard}>
+          {/* Admin Shield */}
+          <View style={styles.adminShieldContainer}>
+            <TouchableOpacity 
+              testID="admin-shield-btn"
+              onPress={onNavigateToAdminLogin}
+              style={styles.shieldBtn}
+              activeOpacity={0.6}
+              {...(Platform.OS === 'web' ? { title: 'Administrator Login' } : {})}
+            >
+              <Shield size={20} color="#6B7280" />
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.header}>
+            <View style={styles.logoContainer}>
+              <HeartPulse color="#2563EB" size={28} />
+            </View>
+            <Text style={[styles.title, !isMobile && { fontSize: 26 }]}>DentPulse AI</Text>
+            <Text style={styles.subtitle}>Sign in to continue</Text>
+          </View>
+
+          {/* Inputs */}
+          <View style={styles.formGroup}>
+            <View style={[styles.inputContainer, isFocused === 'email' && styles.inputFocused]}>
+              <TextInput
+                testID="email-input"
+                style={styles.input}
+                placeholder="Email address"
+                placeholderTextColor="#9ca3af"
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                returnKeyType="next"
+                onSubmitEditing={() => passwordRef.current?.focus()}
+                blurOnSubmit={false}
+                onFocus={() => setIsFocused('email')}
+                onBlur={() => setIsFocused(null)}
+              />
+            </View>
             
-            <View style={styles.statList}>
-              <View style={styles.statItem}>
-                <Text style={styles.statVal}>98.5%</Text>
-                <Text style={styles.statLbl}>Predictive Diagnosis Accuracy</Text>
-              </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statVal}>Real-Time</Text>
-                <Text style={styles.statLbl}>Bone Stability Tracking (ISQ)</Text>
-              </View>
-              <View style={styles.statItem}>
-                <Text style={styles.statVal}>Secure</Text>
-                <Text style={styles.statLbl}>HIPAA-Compliant Patient Logs</Text>
-              </View>
+            <View style={[styles.inputContainer, isFocused === 'password' && styles.inputFocused]}>
+              <TextInput
+                testID="password-input"
+                ref={passwordRef}
+                style={styles.input}
+                placeholder="Password"
+                placeholderTextColor="#9ca3af"
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry={!showPassword}
+                returnKeyType="done"
+                onSubmitEditing={handleLogin}
+                onFocus={() => setIsFocused('password')}
+                onBlur={() => setIsFocused(null)}
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeBtn}>
+                {showPassword ? <EyeOff size={20} color="#6b7280" /> : <Eye size={20} color="#6b7280" />}
+              </TouchableOpacity>
             </View>
 
-            <View style={styles.badgeRow}>
-              <ShieldCheck size={16} color="#93c5fd" />
-              <Text style={styles.badgeTxt}>Certified Healthcare AI Platform</Text>
-            </View>
+            <TouchableOpacity style={styles.forgotBtn} onPress={onNavigateToForgotPassword}>
+              <Text style={styles.forgotText}>Forgot Password?</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Error */}
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+          {/* Submit */}
+          <TouchableOpacity 
+            testID="login-button"
+            style={styles.submitBtn} 
+            onPress={handleLogin} 
+            disabled={loading}
+            activeOpacity={0.8}
+          >
+            {loading ? (
+              <ActivityIndicator color="#ffffff" />
+            ) : (
+              <Text style={styles.submitBtnText}>Sign In</Text>
+            )}
+          </TouchableOpacity>
+
+          {/* Compact Role Selection */}
+          <View style={styles.roleSection}>
+            {ROLES.map((r) => {
+              const Icon = r.icon;
+              const isSelected = role === r.id;
+              return (
+                <TouchableOpacity
+                  key={r.id}
+                  testID={`role-selector-${r.id}`}
+                  style={[styles.roleChip, isSelected && styles.roleChipActive]}
+                  onPress={() => setRole(r.id)}
+                  activeOpacity={0.7}
+                >
+                  <Icon size={16} color={isSelected ? '#2563EB' : '#6b7280'} />
+                  <Text style={[styles.roleChipText, isSelected && styles.roleChipTextActive]}>{r.title}</Text>
+                </TouchableOpacity>
+              )
+            })}
+          </View>
+
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Don't have an account? </Text>
+            <TouchableOpacity onPress={onNavigateToRegister} activeOpacity={0.7}>
+              <Text style={styles.footerLink}>Create Account</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      </View>
 
-      {/* Right form panel */}
-      <View style={styles.webRight}>
-        <ScrollView contentContainerStyle={styles.webRightScroll}>
-          <View style={styles.webCardWrapper}>
-            <GlassCard style={styles.formCard}>{renderForm()}</GlassCard>
-          </View>
-        </ScrollView>
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  mobileRoot: {
+  container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#F8FAFC',
   },
-  mobileScroll: {
+  scrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
-    padding: 20,
-  },
-  cardContainer: {
-    width: '100%',
-    maxWidth: 450,
-    alignSelf: 'center',
-  },
-  webRoot: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: '#f8fafc',
-    height: '100%',
-  },
-  webLeft: {
-    flex: 1.2,
-    backgroundColor: '#0f172a',
-    position: 'relative',
-    overflow: 'hidden',
-    justifyContent: 'center',
-    paddingHorizontal: 60,
-  },
-  decorativeGradient: {
-    position: 'absolute',
-    top: -200,
-    left: -200,
-    width: 600,
-    height: 600,
-    borderRadius: 300,
-    backgroundColor: 'rgba(59, 130, 246, 0.15)',
-    filter: Platform.OS === 'web' ? 'blur(100px)' : undefined,
-  },
-  webLeftContent: {
-    zIndex: 1,
-  },
-  statsWrapper: {
-    gap: 16,
-  },
-  heroTitle: {
-    fontSize: 32,
-    fontWeight: '900',
-    color: '#ffffff',
-    letterSpacing: -1,
-  },
-  heroHeadline: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#94a3b8',
-    marginBottom: 40,
-    maxWidth: 400,
-    lineHeight: 26,
-  },
-  statList: {
-    gap: 24,
-    borderLeftWidth: 2,
-    borderLeftColor: '#1e293b',
-    paddingLeft: 24,
-    marginBottom: 40,
-  },
-  statItem: {
-    gap: 4,
-  },
-  statVal: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#60a5fa',
-  },
-  statLbl: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#94a3b8',
-  },
-  badgeRow: {
-    flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    paddingVertical: 40,
+    paddingHorizontal: 20,
   },
-  badgeTxt: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#93c5fd',
-  },
-  webRight: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: '#f8fafc',
-  },
-  webRightScroll: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: 40,
-  },
-  webCardWrapper: {
+  floatingCard: {
     width: '100%',
-    maxWidth: 460,
-    alignSelf: 'center',
-  },
-  formCard: {
-    padding: 32,
-    borderRadius: 24,
+    maxWidth: 420,
     backgroundColor: '#ffffff',
+    borderRadius: 20,
+    padding: 24,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
-    shadowColor: '#0f172a',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.05,
-    shadowRadius: 20,
-    elevation: 4,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 18,
+    elevation: 8,
   },
-  formContainer: {
-    width: '100%',
+  adminShieldContainer: {
+    position: 'absolute',
+    top: 24,
+    right: 24,
+    zIndex: 10,
   },
-  brandingBox: {
-    alignItems: 'center',
-    marginBottom: 24,
-    gap: 6,
-  },
-  logoCircle: {
-    width: 56,
-    height: 56,
+  shieldBtn: {
+    width: 36,
+    height: 36,
     borderRadius: 18,
-    backgroundColor: '#eff6ff',
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 6,
-  },
-  brandTitle: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: '#1e293b',
-    letterSpacing: -0.5,
-  },
-  brandSubtitle: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#94a3b8',
-    textTransform: 'uppercase',
-  },
-  welcomeText: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#1e293b',
-    textAlign: 'center',
-    marginBottom: 4,
-  },
-  subtext: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#94a3b8',
-    textAlign: 'center',
-    marginBottom: 24,
-    lineHeight: 18,
-  },
-  switcherBg: {
-    flexDirection: 'row',
-    backgroundColor: '#f1f5f9',
-    borderRadius: 14,
-    padding: 4,
-    marginBottom: 24,
-  },
-  switcherBtn: {
-    flex: 1,
-    paddingVertical: 10,
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-  switcherBtnActive: {
-    backgroundColor: '#ffffff',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
+    shadowOpacity: 0.05,
     shadowRadius: 4,
     elevation: 2,
   },
-  switcherText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#64748b',
-  },
-  switcherTextActive: {
-    color: '#3b82f6',
-  },
-  errorBubble: {
-    backgroundColor: '#fef2f2',
-    borderWidth: 1,
-    borderColor: '#fca5a5',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 20,
-  },
-  errorText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#b91c1c',
-  },
-  inputGroup: {
-    marginBottom: 18,
-    gap: 6,
-  },
-  label: {
-    fontSize: 11,
-    fontWeight: '800',
-    color: '#94a3b8',
-    textTransform: 'uppercase',
-    marginLeft: 4,
-  },
-  inputWrapper: {
-    flexDirection: 'row',
+  header: {
+    marginBottom: 32,
     alignItems: 'center',
-    height: 52,
-    backgroundColor: '#f8fafc',
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
   },
-  input: {
-    flex: 1,
-    marginLeft: 12,
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1e293b',
-  },
-  eyeBtn: {
-    padding: 6,
-  },
-  forgotBtn: {
-    alignSelf: 'flex-end',
-    marginBottom: 24,
-  },
-  forgotText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#3b82f6',
-  },
-  signInBtn: {
-    height: 52,
-    backgroundColor: '#3b82f6',
+  logoContainer: {
+    width: 56,
+    height: 56,
+    backgroundColor: '#eff6ff',
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#3b82f6',
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#111827',
+    marginBottom: 4,
+    letterSpacing: -0.5,
+  },
+  subtitle: {
+    fontSize: 15,
+    color: '#6b7280',
+  },
+  formGroup: {
+    marginBottom: 20,
+    gap: 16,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 14,
+    backgroundColor: '#ffffff',
+    height: 52,
+    paddingHorizontal: 16,
+  },
+  inputFocused: {
+    borderColor: '#2563EB',
+    backgroundColor: '#eff6ff',
+  },
+  input: {
+    flex: 1,
+    height: '100%',
+    fontSize: 16,
+    color: '#111827',
+  },
+  eyeBtn: {
+    padding: 8,
+    marginLeft: 8,
+  },
+  forgotBtn: {
+    alignSelf: 'flex-end',
+    paddingVertical: 4,
+  },
+  forgotText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#2563EB',
+  },
+  errorText: {
+    color: '#dc2626',
+    fontSize: 13,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  submitBtn: {
+    backgroundColor: '#2563EB',
+    height: 56,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 24,
+    shadowColor: '#2563EB',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 4,
-    marginBottom: 20,
   },
-  disabledBtn: {
-    opacity: 0.6,
-  },
-  signInBtnText: {
-    fontSize: 15,
-    fontWeight: '800',
+  submitBtnText: {
     color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  roleSection: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 12,
+    marginBottom: 32,
+  },
+  roleChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    backgroundColor: '#f8fafc',
+    borderWidth: 1,
+    borderColor: 'transparent',
+    gap: 6,
+  },
+  roleChipActive: {
+    backgroundColor: '#eff6ff',
+    borderColor: '#bfdbfe',
+  },
+  roleChipText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#6b7280',
+  },
+  roleChipTextActive: {
+    color: '#2563EB',
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 6,
-    marginTop: 8,
+    alignItems: 'center',
   },
-  footerLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#64748b',
+  footerText: {
+    fontSize: 14,
+    color: '#6b7280',
   },
-  footerAction: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: '#3b82f6',
-  },
+  footerLink: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#2563EB',
+  }
 });
-
-export default Login;

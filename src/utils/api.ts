@@ -1,7 +1,14 @@
 import { Patient, ClinicalStat } from '../types';
+import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 
-// Replace with your local machine IP if testing on physical device
-const BASE_URL = 'https://dentpulse-api.onrender.com';
+// Dynamically resolve the backend URL for physical devices on the same network
+let BASE_URL = 'http://localhost:8000';
+
+if (Platform.OS !== 'web' && Constants.expoConfig?.hostUri) {
+  const host = Constants.expoConfig.hostUri.split(':')[0];
+  BASE_URL = `http://${host}:8000`;
+}
 
 const getHeaders = (token?: string | null) => {
   const headers: HeadersInit = {
@@ -137,65 +144,62 @@ export const api = {
   // NEW Authentication & Approval API Endpoints
   // ==========================================
 
-  registerDoctor: async (doctorDetails: any): Promise<any> => {
+  register: async (payload: any): Promise<any> => {
     try {
-      const response = await fetch(`${BASE_URL}/auth/register-doctor`, {
+      const response = await fetch(`${BASE_URL}/auth/register`, {
         method: 'POST',
         headers: getHeaders(),
-        body: JSON.stringify({
-          name: doctorDetails.name,
-          email: doctorDetails.email,
-          password: doctorDetails.password,
-          phone_number: doctorDetails.phone_number,
-          license_id: doctorDetails.license_id,
-          specialization: doctorDetails.specialization,
-          clinic_name: doctorDetails.clinic_name,
-          role: 'doctor',
-        }),
+        body: JSON.stringify(payload),
       });
       const data = await response.json();
-      if (!response.ok) {
-        throw new Error(getErrorMessage(data, 'Registration failed'));
-      }
+      if (!response.ok) throw new Error(getErrorMessage(data, 'Registration failed'));
       return data;
     } catch (error: any) {
-      console.error('API Error:', error);
       throw error;
     }
   },
 
-  sendOtp: async (email: string, method: 'email' | 'sms'): Promise<any> => {
+  sendRegistrationOtp: async (payload: any): Promise<any> => {
     try {
-      const response = await fetch(`${BASE_URL}/auth/send-otp`, {
+      const response = await fetch(`${BASE_URL}/auth/send-registration-otp`, {
         method: 'POST',
         headers: getHeaders(),
-        body: JSON.stringify({ email, method }),
+        body: JSON.stringify(payload),
       });
       const data = await response.json();
-      if (!response.ok) {
-        throw new Error(getErrorMessage(data, 'Failed to trigger OTP'));
-      }
+      if (!response.ok) throw new Error(getErrorMessage(data, 'Failed to trigger OTP'));
       return data;
     } catch (error: any) {
-      console.error('API Error:', error);
       throw error;
     }
   },
 
-  verifyOtp: async (email: string, code: string): Promise<any> => {
+  verifyRegistrationOtp: async (payload: any): Promise<any> => {
     try {
-      const response = await fetch(`${BASE_URL}/auth/verify-otp`, {
+      const response = await fetch(`${BASE_URL}/auth/verify-registration-otp`, {
         method: 'POST',
         headers: getHeaders(),
-        body: JSON.stringify({ email, code }),
+        body: JSON.stringify(payload),
       });
       const data = await response.json();
-      if (!response.ok) {
-        throw new Error(getErrorMessage(data, 'OTP verification failed'));
-      }
+      if (!response.ok) throw new Error(getErrorMessage(data, 'OTP verification failed'));
       return data;
     } catch (error: any) {
-      console.error('API Error:', error);
+      throw error;
+    }
+  },
+
+  resendRegistrationOtp: async (email: string): Promise<any> => {
+    try {
+      const response = await fetch(`${BASE_URL}/auth/resend-registration-otp`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(getErrorMessage(data, 'Failed to resend OTP'));
+      return data;
+    } catch (error: any) {
       throw error;
     }
   },
@@ -208,224 +212,9 @@ export const api = {
         body: JSON.stringify({ username, password, device_info }),
       });
       const data = await response.json();
-      if (!response.ok) {
-        throw new Error(getErrorMessage(data, 'Authentication failed'));
-      }
+      if (!response.ok) throw new Error(getErrorMessage(data, 'Authentication failed'));
       return data;
     } catch (error: any) {
-      console.error('API Error:', error);
-      throw error;
-    }
-  },
-
-  logout: async (): Promise<any> => {
-    try {
-      const response = await fetch(`${BASE_URL}/auth/logout`, {
-        method: 'POST',
-        headers: getHeaders(),
-      });
-      return await response.json();
-    } catch (error: any) {
-      console.error('API Error:', error);
-      return { success: true };
-    }
-  },
-
-  getCurrentUser: async (token: string): Promise<any> => {
-    try {
-      const response = await fetch(`${BASE_URL}/auth/me`, {
-        headers: getHeaders(token),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(getErrorMessage(data, 'Session recovery failed'));
-      }
-      return data;
-    } catch (error: any) {
-      console.error('API Error:', error);
-      throw error;
-    }
-  },
-
-  getProfile: async (token: string): Promise<any> => {
-    try {
-      const response = await fetch(`${BASE_URL}/auth/profile`, {
-        headers: getHeaders(token),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(getErrorMessage(data, 'Profile retrieval failed'));
-      }
-      return data;
-    } catch (error: any) {
-      console.error('API Error:', error);
-      throw error;
-    }
-  },
-
-  // ==========================================
-  // NEW Admin API Endpoints
-  // ==========================================
-
-  getPendingDoctors: async (token: string): Promise<any[]> => {
-    try {
-      const response = await fetch(`${BASE_URL}/admin/pending-doctors`, {
-        headers: getHeaders(token),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(getErrorMessage(data, 'Failed to fetch pending queue'));
-      }
-      return data;
-    } catch (error: any) {
-      console.error('API Error:', error);
-      return [];
-    }
-  },
-
-  getApprovedDoctors: async (token: string): Promise<any[]> => {
-    try {
-      const response = await fetch(`${BASE_URL}/admin/approved-doctors`, {
-        headers: getHeaders(token),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(getErrorMessage(data, 'Failed to fetch approved doctors'));
-      }
-      return data;
-    } catch (error: any) {
-      console.error('API Error:', error);
-      return [];
-    }
-  },
-
-  approveDoctor: async (doctorId: number, token: string): Promise<any> => {
-    try {
-      const response = await fetch(`${BASE_URL}/admin/approve-doctor/${doctorId}`, {
-        method: 'POST',
-        headers: getHeaders(token),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(getErrorMessage(data, 'Doctor approval failed'));
-      }
-      return data;
-    } catch (error: any) {
-      console.error('API Error:', error);
-      throw error;
-    }
-  },
-
-  rejectDoctor: async (doctorId: number, token: string): Promise<any> => {
-    try {
-      const response = await fetch(`${BASE_URL}/admin/reject-doctor/${doctorId}`, {
-        method: 'POST',
-        headers: getHeaders(token),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(getErrorMessage(data, 'Doctor rejection failed'));
-      }
-      return data;
-    } catch (error: any) {
-      console.error('API Error:', error);
-      throw error;
-    }
-  },
-
-  getLoginHistory: async (token: string): Promise<any[]> => {
-    try {
-      const response = await fetch(`${BASE_URL}/admin/login-history`, {
-        headers: getHeaders(token),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(getErrorMessage(data, 'Failed to fetch login histories'));
-      }
-      return data;
-    } catch (error: any) {
-      console.error('API Error:', error);
-      return [];
-    }
-  },
-
-  forgotPassword: async (emailOrPhone: string, method: 'email' | 'sms'): Promise<any> => {
-    try {
-      const response = await fetch(`${BASE_URL}/auth/forgot-password`, {
-        method: 'POST',
-        headers: getHeaders(),
-        body: JSON.stringify({ email_or_phone: emailOrPhone, method }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(getErrorMessage(data, 'Failed to send reset OTP'));
-      }
-      return data;
-    } catch (error: any) {
-      console.error('API Error:', error);
-      throw error;
-    }
-  },
-
-  verifyResetOtp: async (emailOrPhone: string, code: string): Promise<any> => {
-    try {
-      const response = await fetch(`${BASE_URL}/auth/verify-reset-otp`, {
-        method: 'POST',
-        headers: getHeaders(),
-        body: JSON.stringify({ email_or_phone: emailOrPhone, code }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(getErrorMessage(data, 'Failed to verify reset OTP'));
-      }
-      return data;
-    } catch (error: any) {
-      console.error('API Error:', error);
-      throw error;
-    }
-  },
-
-  resetPassword: async (emailOrPhone: string, code: string, newPassword: string): Promise<any> => {
-    try {
-      const response = await fetch(`${BASE_URL}/auth/reset-password`, {
-        method: 'POST',
-        headers: getHeaders(),
-        body: JSON.stringify({ email_or_phone: emailOrPhone, code, new_password: newPassword }),
-      });
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(getErrorMessage(data, 'Failed to reset password'));
-      }
-      return data;
-    } catch (error: any) {
-      console.error('API Error:', error);
-      throw error;
-    }
-  },
-
-  // ==========================================
-  // PATIENT AUTH API
-  // ==========================================
-
-  registerPatient: async (details: any): Promise<any> => {
-    try {
-      const response = await fetch(`${BASE_URL}/patient/register`, {
-        method: 'POST',
-        headers: getHeaders(),
-        body: JSON.stringify({
-          name: details.name,
-          age: details.age,
-          gender: details.gender,
-          email: details.email,
-          phone_number: details.phone_number,
-          password: details.password,
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(getErrorMessage(data, 'Registration failed'));
-      return data;
-    } catch (error: any) {
-      console.error('API Error:', error);
       throw error;
     }
   },
@@ -441,35 +230,17 @@ export const api = {
       if (!response.ok) throw new Error(getErrorMessage(data, 'Login failed'));
       return data;
     } catch (error: any) {
-      console.error('API Error:', error);
       throw error;
     }
   },
 
-  sendPatientOtp: async (email: string, method: 'email' | 'sms'): Promise<any> => {
+  getProfile: async (token: string): Promise<any> => {
     try {
-      const response = await fetch(`${BASE_URL}/patient/send-otp`, {
-        method: 'POST',
-        headers: getHeaders(),
-        body: JSON.stringify({ email, method }),
+      const response = await fetch(`${BASE_URL}/auth/profile`, {
+        headers: getHeaders(token),
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(getErrorMessage(data, 'Failed to send OTP'));
-      return data;
-    } catch (error: any) {
-      throw error;
-    }
-  },
-
-  verifyPatientOtp: async (email: string, code: string): Promise<any> => {
-    try {
-      const response = await fetch(`${BASE_URL}/patient/verify-otp`, {
-        method: 'POST',
-        headers: getHeaders(),
-        body: JSON.stringify({ email, code }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(getErrorMessage(data, 'OTP verification failed'));
+      if (!response.ok) throw new Error(getErrorMessage(data, 'Profile retrieval failed'));
       return data;
     } catch (error: any) {
       throw error;
@@ -483,6 +254,123 @@ export const api = {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(getErrorMessage(data, 'Profile retrieval failed'));
+      return data;
+    } catch (error: any) {
+      throw error;
+    }
+  },
+
+  // ==========================================
+  // ADMIN API
+  // ==========================================
+
+  getAdminOverview: async (token: string): Promise<any> => {
+    try {
+      const response = await fetch(`${BASE_URL}/admin/overview-stats`, {
+        headers: getHeaders(token),
+      });
+      return await response.json();
+    } catch (error) {
+      return null;
+    }
+  },
+
+  getDoctorProfile: async (id: number, token: string): Promise<any> => {
+    try {
+      const response = await fetch(`${BASE_URL}/admin/doctor/${id}`, {
+        headers: getHeaders(token),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(getErrorMessage(data, 'Failed to fetch doctor'));
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  suspendDoctor: async (id: number, token: string): Promise<any> => {
+    try {
+      const response = await fetch(`${BASE_URL}/admin/suspend-doctor/${id}`, {
+        method: 'POST',
+        headers: getHeaders(token),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(getErrorMessage(data, 'Failed to suspend doctor'));
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  deactivateDoctor: async (id: number, token: string): Promise<any> => {
+    try {
+      const response = await fetch(`${BASE_URL}/admin/deactivate-doctor/${id}`, {
+        method: 'POST',
+        headers: getHeaders(token),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(getErrorMessage(data, 'Failed to deactivate doctor'));
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  getPendingDoctors: async (token: string): Promise<any[]> => {
+    try {
+      const response = await fetch(`${BASE_URL}/admin/pending-doctors`, {
+        headers: getHeaders(token),
+      });
+      return await response.json();
+    } catch (error) {
+      return [];
+    }
+  },
+
+  getApprovedDoctorsAdmin: async (token: string): Promise<any[]> => {
+    try {
+      const response = await fetch(`${BASE_URL}/admin/approved-doctors`, {
+        headers: getHeaders(token),
+      });
+      return await response.json();
+    } catch (error) {
+      return [];
+    }
+  },
+
+  getLoginHistory: async (token: string): Promise<any[]> => {
+    try {
+      const response = await fetch(`${BASE_URL}/admin/login-history`, {
+        headers: getHeaders(token),
+      });
+      return await response.json();
+    } catch (error) {
+      return [];
+    }
+  },
+
+  approveDoctor: async (id: number, token: string): Promise<any> => {
+    try {
+      const response = await fetch(`${BASE_URL}/admin/approve-doctor/${id}`, {
+        method: 'POST',
+        headers: getHeaders(token),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(getErrorMessage(data, 'Approval failed'));
+      return data;
+    } catch (error: any) {
+      throw error;
+    }
+  },
+
+  rejectDoctor: async (id: number, token: string): Promise<any> => {
+    try {
+      const response = await fetch(`${BASE_URL}/admin/reject-doctor/${id}`, {
+        method: 'POST',
+        headers: getHeaders(token),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(getErrorMessage(data, 'Rejection failed'));
       return data;
     } catch (error: any) {
       throw error;
@@ -504,24 +392,71 @@ export const api = {
     }
   },
 
-  bookAppointment: async (data: any, token: string): Promise<any> => {
+  bookAppointment: async (payload: any, token: string): Promise<any> => {
     try {
       const response = await fetch(`${BASE_URL}/appointments/book`, {
         method: 'POST',
         headers: getHeaders(token),
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
-      const res = await response.json();
-      if (!response.ok) throw new Error(getErrorMessage(res, 'Booking failed'));
-      return res;
+      const data = await response.json();
+      if (!response.ok) throw new Error(getErrorMessage(data, 'Booking failed'));
+      return data;
     } catch (error: any) {
       throw error;
+    }
+  },
+
+  cancelAppointment: async (id: number, token: string): Promise<any> => {
+    try {
+      const response = await fetch(`${BASE_URL}/appointments/${id}/cancel`, {
+        method: 'POST',
+        headers: getHeaders(token),
+      });
+      return await response.json();
+    } catch (error) {
+      return null;
     }
   },
 
   getMyAppointments: async (token: string): Promise<any[]> => {
     try {
       const response = await fetch(`${BASE_URL}/appointments/my`, {
+        headers: getHeaders(token),
+      });
+      return await response.json();
+    } catch (error) {
+      return [];
+    }
+  },
+
+  getMyPrescriptions: async (token: string): Promise<any[]> => {
+    try {
+      const response = await fetch(`${BASE_URL}/recovery/prescriptions`, {
+        headers: getHeaders(token),
+      });
+      return await response.json();
+    } catch (error) {
+      return [];
+    }
+  },
+
+  addPrescription: async (payload: any, token: string): Promise<any> => {
+    try {
+      const response = await fetch(`${BASE_URL}/recovery/prescriptions/bulk`, {
+        method: 'POST',
+        headers: getHeaders(token),
+        body: JSON.stringify(payload),
+      });
+      return await response.json();
+    } catch (error) {
+      return null;
+    }
+  },
+
+  getRecoveryTimeline: async (token: string): Promise<any[]> => {
+    try {
+      const response = await fetch(`${BASE_URL}/recovery/timeline`, {
         headers: getHeaders(token),
       });
       return await response.json();
@@ -544,6 +479,18 @@ export const api = {
   acceptAppointment: async (id: number, token: string): Promise<any> => {
     try {
       const response = await fetch(`${BASE_URL}/appointments/${id}/accept`, {
+        method: 'POST',
+        headers: getHeaders(token),
+      });
+      return await response.json();
+    } catch (error) {
+      return null;
+    }
+  },
+
+  rejectAppointment: async (id: number, token: string): Promise<any> => {
+    try {
+      const response = await fetch(`${BASE_URL}/appointments/${id}/reject`, {
         method: 'POST',
         headers: getHeaders(token),
       });

@@ -1,61 +1,69 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
-import { Search, Bell, Menu, User } from 'lucide-react-native';
+import { Search, Bell, MessageSquare, Sun, Moon, User } from 'lucide-react-native';
 import { useResponsive } from '../../hooks/useResponsive';
 import { useAuth } from '../../context/AuthContext';
 
-const Navbar: React.FC = () => {
+interface NavbarProps {
+  activeRoute?: string;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ activeRoute = 'Dashboard' }) => {
   const { isMobile } = useResponsive();
   const { user } = useAuth();
+  
+  // Theme state (mock for now)
+  const [isDark, setIsDark] = React.useState(false);
 
   if (isMobile) return null;
 
-  const getDisplayLastName = (fullName: string) => {
-    try {
-      const parts = fullName.trim().split(' ');
-      // If starts with "Dr." or "Dr", skip it to get actual last name
-      let lastName = parts[parts.length - 1];
-      if (parts.length > 1 && (parts[0].toLowerCase().startsWith('dr'))) {
-        lastName = parts[parts.length - 1];
-      }
-      return lastName.startsWith('Dr.') ? lastName : `Dr. ${lastName}`;
-    } catch (e) {
-      return 'Doctor';
-    }
-  };
-
   return (
     <View style={styles.container}>
-      <View style={styles.searchContainer}>
-        <Search size={18} color="#94a3b8" />
-        <TextInput 
-          style={styles.searchInput} 
-          placeholder="Search clinical intelligence..." 
-          placeholderTextColor="#94a3b8"
-        />
+      {/* Left: Breadcrumbs & Page Title */}
+      <View style={styles.leftSection}>
+        <Text style={styles.pageTitle}>{activeRoute}</Text>
+        <View style={styles.breadcrumb}>
+          <Text style={styles.breadcrumbText}>Home</Text>
+          <Text style={styles.breadcrumbSeparator}>/</Text>
+          <Text style={styles.breadcrumbCurrent}>{activeRoute}</Text>
+        </View>
       </View>
 
-      <View style={styles.actions}>
-        <TouchableOpacity style={styles.iconButton}>
-          <Bell size={20} color="#64748b" />
-          <View style={styles.badge} />
+      {/* Center: Global Search */}
+      <View style={styles.centerSection}>
+        <View style={styles.searchBox}>
+          <Search size={16} color="#64748B" />
+          <TextInput 
+            style={styles.searchInput} 
+            placeholder="Search patient, implant, appointment..." 
+            placeholderTextColor="#94A3B8"
+          />
+        </View>
+      </View>
+
+      {/* Right: Actions & Profile */}
+      <View style={styles.rightSection}>
+        <TouchableOpacity style={styles.iconBtn} onPress={() => setIsDark(!isDark)}>
+          {isDark ? <Sun size={18} color="#64748B" /> : <Moon size={18} color="#64748B" />}
         </TouchableOpacity>
         
+        <TouchableOpacity style={styles.iconBtn}>
+          <MessageSquare size={18} color="#64748B" />
+          <View style={styles.badge} />
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.iconBtn}>
+          <Bell size={18} color="#64748B" />
+          <View style={styles.badge} />
+        </TouchableOpacity>
+
         <View style={styles.divider} />
-        
-        <View style={styles.profileSummary}>
-          <View style={styles.textInfo}>
-            <Text style={styles.name}>
-              {user ? getDisplayLastName(user.name) : 'Doctor'}
-            </Text>
-            <Text style={styles.role}>
-              {user?.clinic_name || 'DentPulse Clinical'}
-            </Text>
+
+        <TouchableOpacity style={styles.profileBtn}>
+          <View style={styles.avatar}>
+            <User size={16} color="#2563EB" />
           </View>
-          <View style={styles.avatarMini}>
-            <User size={16} color="#3b82f6" />
-          </View>
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -63,83 +71,109 @@ const Navbar: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    height: 72,
+    height: 64,
     backgroundColor: '#ffffff',
     borderBottomWidth: 1,
-    borderBottomColor: '#f1f5f9',
+    borderBottomColor: '#E2E8F0',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 24,
   },
-  searchContainer: {
-    width: 320,
-    height: 40,
-    backgroundColor: '#f8fafc',
-    borderRadius: 12,
+  leftSection: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  pageTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#0F172A',
+    marginBottom: 2,
+  },
+  breadcrumb: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  breadcrumbText: {
+    fontSize: 12,
+    color: '#64748B',
+  },
+  breadcrumbSeparator: {
+    fontSize: 12,
+    color: '#CBD5E1',
+    marginHorizontal: 6,
+  },
+  breadcrumbCurrent: {
+    fontSize: 12,
+    color: '#0F172A',
+    fontWeight: '500',
+  },
+  centerSection: {
+    flex: 2,
+    alignItems: 'center',
+  },
+  searchBox: {
+    width: '80%',
+    maxWidth: 480,
+    height: 36,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 6,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
+    borderColor: '#E2E8F0',
   },
   searchInput: {
     flex: 1,
-    marginLeft: 10,
+    marginLeft: 8,
     fontSize: 13,
-    color: '#1e293b',
+    color: '#1E293B',
+    height: '100%',
   },
-  actions: {
+  rightSection: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
+    justifyContent: 'flex-end',
+    gap: 12,
   },
-  iconButton: {
-    width: 40,
-    height: 40,
+  iconBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 6,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'relative',
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
   },
   badge: {
     position: 'absolute',
-    top: 8,
-    right: 8,
+    top: 6,
+    right: 6,
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#ef4444',
-    borderWidth: 2,
+    backgroundColor: '#EF4444',
+    borderWidth: 1,
     borderColor: '#ffffff',
   },
   divider: {
     width: 1,
     height: 24,
-    backgroundColor: '#f1f5f9',
+    backgroundColor: '#E2E8F0',
+    marginHorizontal: 4,
   },
-  profileSummary: {
+  profileBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
   },
-  textInfo: {
-    alignItems: 'flex-end',
-  },
-  name: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#1e293b',
-  },
-  role: {
-    fontSize: 11,
-    color: '#94a3b8',
-    fontWeight: '600',
-  },
-  avatarMini: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
-    backgroundColor: '#eff6ff',
+  avatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#EFF6FF',
     justifyContent: 'center',
     alignItems: 'center',
   },

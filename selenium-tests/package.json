@@ -1,0 +1,16 @@
+{
+  "name": "dentpulse-selenium-tests",
+  "version": "1.0.0",
+  "description": "E2E Web UI Testing for DentPulse AI using Selenium, Mocha, and Chai",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --require tests/hooks.js tests/*-tests.js --reporter mochawesome --reporter-options reportDir=reports,reportFilename=Selenium_Web_Report,html=true,json=true --timeout 60000"
+  },
+  "dependencies": {
+    "chai": "^4.3.7",
+    "exceljs": "^4.4.0",
+    "mocha": "^10.2.0",
+    "mochawesome": "^7.1.3",
+    "selenium-webdriver": "^4.9.0"
+  }
+}

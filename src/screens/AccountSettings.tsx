@@ -1,13 +1,30 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
-import { User, Mail, Phone, Award, Building2, ChevronRight, Camera, Bell, Moon } from 'lucide-react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Alert, Platform } from 'react-native';
+import { User, Mail, Phone, Award, Building2, ChevronRight, Camera, Bell, Moon, LogOut } from 'lucide-react-native';
 import GlassCard from '../components/premium/GlassCard';
 import { useAuth } from '../context/AuthContext';
 
 const AccountSettings: React.FC = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isNotifications, setIsNotifications] = useState(true);
+
+  const handleLogout = () => {
+    if (Platform.OS === 'web') {
+      if (window.confirm("Are you sure you want to sign out?")) {
+        logout();
+      }
+    } else {
+      Alert.alert(
+        "Sign Out",
+        "Are you sure you want to sign out?",
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Sign Out", onPress: logout, style: "destructive" }
+        ]
+      );
+    }
+  };
 
   const getInitials = (fullName: string) => {
     try {
@@ -36,7 +53,8 @@ const AccountSettings: React.FC = () => {
   );
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
+      <View style={styles.formContainer}>
       <View style={styles.profileHeader}>
         <View style={styles.avatarContainer}>
           <View style={styles.avatar}>
@@ -104,6 +122,12 @@ const AccountSettings: React.FC = () => {
           </View>
         </GlassCard>
       </View>
+
+      <TouchableOpacity testID="logout-button" style={styles.logoutBtn} onPress={handleLogout}>
+        <LogOut size={20} color="#ef4444" />
+        <Text style={styles.logoutBtnText}>Sign Out</Text>
+      </TouchableOpacity>
+      </View>
     </ScrollView>
   );
 };
@@ -113,8 +137,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
-  content: {
+  scrollContent: {
+    flexGrow: 1,
     padding: 24,
+    alignItems: 'center',
+  },
+  formContainer: {
+    width: '100%',
+    maxWidth: 500,
   },
   profileHeader: {
     alignItems: 'center',
@@ -196,21 +226,36 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   settingLabel: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#94a3b8',
-    textTransform: 'uppercase',
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#0f172a',
     marginBottom: 2,
   },
   settingValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#1e293b',
+    fontSize: 12,
+    color: '#64748b',
   },
   divider: {
     height: 1,
     backgroundColor: '#f1f5f9',
-    marginHorizontal: 12,
+    marginLeft: 54,
+  },
+  logoutBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fef2f2',
+    paddingVertical: 14,
+    borderRadius: 12,
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: '#fecaca',
+  },
+  logoutBtnText: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#ef4444',
+    marginLeft: 8,
   },
 });
 

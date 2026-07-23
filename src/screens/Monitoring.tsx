@@ -252,34 +252,26 @@ const Monitoring: React.FC = () => {
       uploaded_scan: scanName || 'xray_normal.png'
     };
 
-    // Generate dynamic dummy values in the requested range
-    const dummySuccessPercent = Math.floor(Math.random() * (97 - 85 + 1)) + 85;
-    const dummyDays = Math.floor(Math.random() * (45 - 14 + 1)) + 14;
-
     try {
-      const response = await fetch('https://dentpulse-api.onrender.com/monitoring/log', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
+      const result = await api.logMonitoring(payload, token);
       
-      const result = await response.json();
-      if (response.ok && result) {
-        let parsedCnn = { class: 'Normal Healing', confidence: 94.5 };
+      if (result) {
+        let parsedCnn = { class: 'Unknown', confidence: 0 };
         let parsedSvm = { 
-          risk_level: 'Low Risk', 
-          healing_status: 'Stable Healing', 
-          success_probability: dummySuccessPercent, 
-          stability_gain: '+12%', 
+          risk_level: 'Unknown', 
+          healing_status: 'Unknown', 
+          success_probability: 0, 
+          stability_gain: '0%', 
           alert: null,
-          days_to_ok: dummyDays
+          days_to_ok: 0
         };
         
         if (result.cnn_result) {
           try { parsedCnn = JSON.parse(result.cnn_result); } catch(e){}
+        }
+        
+        if (result.svm_result) {
+          try { parsedSvm = JSON.parse(result.svm_result); } catch(e){}
         }
 
         setLogResults({
@@ -288,34 +280,11 @@ const Monitoring: React.FC = () => {
         });
         loadHistory(selectedPatient.id);
       } else {
-        const mockSvm = {
-          risk_level: 'Low Risk',
-          healing_status: 'Stable Healing',
-          success_probability: dummySuccessPercent,
-          stability_gain: "+8%",
-          alert: null,
-          days_to_ok: dummyDays
-        };
-        
-        setLogResults({
-          cnn: cnnOutput || { class: 'Normal Healing', confidence: 95.8 },
-          svm: mockSvm
-        });
+         Alert.alert("Error", "Failed to process monitoring log from the backend.");
       }
     } catch (error) {
       console.error(error);
-      const mockSvm = {
-        risk_level: 'Low Risk',
-        healing_status: 'Stable Healing',
-        success_probability: dummySuccessPercent,
-        stability_gain: "+8%",
-        alert: null,
-        days_to_ok: dummyDays
-      };
-      setLogResults({
-        cnn: cnnOutput || { class: 'Normal Healing', confidence: 95.8 },
-        svm: mockSvm
-      });
+      Alert.alert("Error", "An unexpected error occurred while logging.");
     } finally {
       setLoading(false);
     }

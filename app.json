@@ -8,5 +8,13 @@
       "projectId": "ddf12407-b288-496b-9ec0-e063864e9e70"
     }
   },
-  "owner": "mann1090"
+  "owner": "mann1090",
+  "runtimeVersion": {
+    "policy": "appVersion"
+  },
+  "updates": {
+    "url": "https://u.expo.dev/ddf12407-b288-496b-9ec0-e063864e9e70"
+  },
+  "android": {},
+  "ios": {}
 }

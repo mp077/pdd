@@ -21,7 +21,7 @@ interface RegisterDoctorProps {
 }
 
 const RegisterDoctor: React.FC<RegisterDoctorProps> = ({ onNavigateToLogin, onNavigateToOtp }) => {
-  const { registerDoctor, sendOtpCode } = useAuth();
+  const { register } = useAuth();
   const { isMobile } = useResponsive();
 
   const [name, setName] = useState('');
@@ -67,7 +67,7 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({ onNavigateToLogin, onNa
     setLoading(true);
 
     try {
-      const result = await registerDoctor({
+      const result = await register({
         name: name.trim(),
         email: email.trim().toLowerCase(),
         password,
@@ -75,16 +75,12 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({ onNavigateToLogin, onNa
         license_id: licenseId.trim(),
         specialization: specialization.trim(),
         clinic_name: clinicName.trim(),
+        role: 'doctor'
       });
 
       if (result.success) {
-        // Automatically request mock OTP trigger to registration email
-        try {
-          await sendOtpCode(email.trim().toLowerCase(), 'email');
-        } catch (otpErr) {
-          console.warn('Silent OTP trigger error:', otpErr);
-        }
-        onNavigateToOtp();
+        alert("Registration successful! Please login.");
+        onNavigateToLogin();
       } else {
         setErrorMsg(result.message || 'Registration failed.');
       }
@@ -112,7 +108,7 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({ onNavigateToLogin, onNa
         <Text style={styles.brandSubtitle}>Join DentPulse AI Post-Implant Network</Text>
       </View>
 
-      {errorMsg && (
+      {!!errorMsg && (
         <View style={styles.errorBubble}>
           <Text style={styles.errorText}>{errorMsg}</Text>
         </View>
@@ -321,8 +317,8 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     width: '100%',
-    maxWidth: 550,
-    alignSelf: 'center',
+    maxWidth: 500,
+    backgroundColor: '#ffffff',
   },
   formCard: {
     padding: 32,

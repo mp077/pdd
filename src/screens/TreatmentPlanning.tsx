@@ -305,6 +305,7 @@ const Planning: React.FC = () => {
           <View style={[styles.searchBar, selectedPatient && styles.searchBarSelected]}>
             <Search size={18} color="#64748b" style={styles.searchIcon} />
             <TextInput
+              testID="patient-search-input"
               style={styles.searchInput}
               placeholder="Search active patients by name (e.g. Sarah Johnson)..."
               placeholderTextColor="#94a3b8"
@@ -414,17 +415,17 @@ const Planning: React.FC = () => {
             <View style={styles.row}>
               <View style={styles.inputItem}>
                 <Text style={styles.label}>Bone Height (mm)</Text>
-                <TextInput style={styles.input} placeholder="12.5" value={boneHeight} onChangeText={setBoneHeight} keyboardType="numeric" />
+                <TextInput testID="bone-height-input" style={styles.input} placeholder="12.5" value={boneHeight} onChangeText={setBoneHeight} keyboardType="numeric" />
               </View>
               <View style={styles.inputItem}>
                 <Text style={styles.label}>Bone Width (mm)</Text>
-                <TextInput style={styles.input} placeholder="6.2" value={boneWidth} onChangeText={setBoneWidth} keyboardType="numeric" />
+                <TextInput testID="bone-width-input" style={styles.input} placeholder="6.2" value={boneWidth} onChangeText={setBoneWidth} keyboardType="numeric" />
               </View>
             </View>
 
             <View style={styles.inputItem}>
               <Text style={styles.label}>Density (HU)</Text>
-              <TextInput style={styles.input} placeholder="1050" value={density} onChangeText={setDensity} keyboardType="numeric" />
+              <TextInput testID="bone-density-input" style={styles.input} placeholder="1050" value={density} onChangeText={setDensity} keyboardType="numeric" />
             </View>
 
             <View style={styles.inputItem}>
@@ -433,6 +434,7 @@ const Planning: React.FC = () => {
             </View>
 
             <TouchableOpacity 
+              testID="generate-plan-btn"
               style={[styles.primaryButton, loading && { opacity: 0.7 }]}
               onPress={handleGenerate}
               disabled={loading}

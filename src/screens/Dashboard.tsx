@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useResponsive } from '../hooks/useResponsive';
-import GlassCard from '../components/premium/GlassCard';
-import StatusPill from '../components/premium/StatusPill';
-import { RefreshCw, CheckCircle, Clock, Video, Users, Check, X, Calendar } from 'lucide-react-native';
 import { api } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
-import { LogoLoader } from '../components/shared/LogoLoader';
+import { useFocusEffect } from '@react-navigation/native';
+import { 
+  Calendar as CalendarIcon, 
+  Users, 
+  FileText, 
+  AlertTriangle, 
+  UserPlus,
+  Plus
+} from 'lucide-react-native';
 
 const Dashboard: React.FC = () => {
   const { user, token } = useAuth();
@@ -14,340 +19,415 @@ const Dashboard: React.FC = () => {
   const [appointments, setAppointments] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const hasAlerts = false;
+
   const loadData = async () => {
     if (!token) return;
     setLoading(true);
-    const data = await api.getDoctorAppointments(token);
-    if (data && Array.isArray(data)) {
-      setAppointments(data);
+    try {
+      const data = await api.getDoctorAppointments(token);
+      if (data && Array.isArray(data)) {
+        setAppointments(data);
+      }
+    } catch (e) {
+      console.error(e);
     }
     setLoading(false);
   };
 
-  useEffect(() => {
-    loadData();
-  }, [token]);
-
-  const handleAccept = async (id: number) => {
-    if (!token) return;
-    await api.acceptAppointment(id, token);
-    
-    // Extract and automatically add this accepted patient to the doctor's Patients registry
-    const appt = appointments.find(a => a.id === id);
-    if (appt) {
-      try {
-        const newPatientData = {
-          patient_id: `PID-${appt.id}`,
-          full_name: appt.patient_name || 'Accepted Patient',
-          age: 38,
-          implant_site: '#14',
-          surgery_date: new Date().toISOString().split('T')[0],
-          risk_level: 'Low' as const,
-          doctor_id: user?.id || null
-        };
-        await api.addPatient(newPatientData, token);
-      } catch (err) {
-        console.error("Failed to auto-add accepted patient to registry:", err);
-      }
-    }
-    loadData();
-  };
-
-  const handleCancel = async (id: number) => {
-    if (!token) return;
-    try {
-      await api.cancelAppointment(id, token);
-    } catch (e) {
-      console.log(e);
-    }
-    loadData();
-  };
-
-  const doctorLabel = user?.name 
-    ? (user.name.startsWith('Dr.') ? user.name : `Dr. ${user.name}`) 
-    : 'Dr. Mann';
-
-  const pendingVirtuals = appointments.filter(a => a.consultation_type === 'virtual' && a.status === 'pending').length;
-  const todayBookings = appointments.filter(a => a.status === 'accepted' || a.status === 'pending').length;
+  useFocusEffect(
+    useCallback(() => {
+      loadData();
+    }, [token])
+  );
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {/* Clean Header Section */}
-      <View style={styles.header}>
-        <View style={styles.titleRow}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <Image 
-              source={require('../assets/logo.png')} 
-              style={{ width: 40, height: 40, borderRadius: 20 }} 
-              resizeMode="contain" 
-            />
-            <Text style={styles.title}>DentPulse AI</Text>
-          </View>
-          <TouchableOpacity onPress={loadData}>
-            <RefreshCw size={18} color="#94a3b8" style={loading ? { opacity: 0.5 } : {}} />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.doctorSub}>{doctorLabel}</Text>
-      </View>
-
-      {/* KPI 2x2 Grid */}
-      <View style={isMobile ? styles.kpiGridMobile : styles.kpiGridWeb}>
-        <GlassCard style={styles.kpiCard}>
-          <View style={[styles.iconBox, { backgroundColor: '#ecfdf5' }]}>
-            <CheckCircle size={20} color="#10b981" />
-          </View>
-          <Text style={styles.kpiVal}>96%</Text>
-          <Text style={styles.kpiLabel}>Overall Implant Health</Text>
-        </GlassCard>
-
-        <GlassCard style={styles.kpiCard}>
-          <View style={[styles.iconBox, { backgroundColor: '#eff6ff' }]}>
-            <Users size={20} color="#3b82f6" />
-          </View>
-          <Text style={styles.kpiVal}>3</Text>
-          <Text style={styles.kpiLabel}>Active Cases</Text>
-        </GlassCard>
-
-        <GlassCard style={styles.kpiCard}>
-          <View style={[styles.iconBox, { backgroundColor: '#fdf4ff' }]}>
-            <Calendar size={20} color="#a855f7" />
-          </View>
-          <Text style={styles.kpiVal}>{todayBookings} Today</Text>
-          <Text style={styles.kpiLabel}>Patient Bookings</Text>
-        </GlassCard>
-
-        <GlassCard style={styles.kpiCard}>
-          <View style={[styles.iconBox, { backgroundColor: '#fff7ed' }]}>
-            <Video size={20} color="#f97316" />
-          </View>
-          <Text style={styles.kpiVal}>{pendingVirtuals} Pending</Text>
-          <Text style={styles.kpiLabel}>Virtual Consultations</Text>
-        </GlassCard>
-      </View>
-
-      {/* Appointments List */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Appointments</Text>
+    <View style={styles.container}>
+      <ScrollView style={styles.mainContent} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         
-        {loading ? (
-          <LogoLoader size={50} style={{ marginTop: 20 }} />
-        ) : appointments.length === 0 ? (
-          <View style={styles.emptyBox}>
-            <Text style={styles.emptyText}>No appointments scheduled at the moment.</Text>
+        {/* 2x2 KPI GRID */}
+        <View style={styles.kpiGrid}>
+          <View style={styles.kpiCard}>
+            <View style={[styles.kpiIconWrapper, { backgroundColor: '#EFF6FF' }]}>
+              <CalendarIcon size={18} color="#2563EB" />
+            </View>
+            <View style={styles.kpiTextContainer}>
+              <Text testID="kpi-appointments-count" style={styles.kpiValue}>{appointments.length}</Text>
+              <Text style={styles.kpiLabel}>Appointments</Text>
+            </View>
           </View>
-        ) : (
-          <View style={styles.appointmentList}>
-            {appointments.map((appt) => (
-              <GlassCard key={appt.id} style={styles.apptCard}>
-                <View style={styles.apptHeader}>
-                  <View>
-                    <Text style={styles.apptPatient}>{appt.patient_name || 'Unknown Patient'}</Text>
-                    <Text style={styles.apptMeta}>
-                      {appt.date} • {appt.time} • <Text style={{textTransform: 'capitalize'}}>{appt.consultation_type}</Text>
+
+          <View style={styles.kpiCard}>
+            <View style={[styles.kpiIconWrapper, { backgroundColor: '#FEF3C7' }]}>
+              <Users size={18} color="#D97706" />
+            </View>
+            <View style={styles.kpiTextContainer}>
+              <Text testID="kpi-waiting-count" style={styles.kpiValue}>{appointments.filter(a => a.status === 'pending').length}</Text>
+              <Text style={styles.kpiLabel}>Waiting</Text>
+            </View>
+          </View>
+
+          <View style={styles.kpiCard}>
+            <View style={[styles.kpiIconWrapper, { backgroundColor: '#F3E8FF' }]}>
+              <FileText size={18} color="#9333EA" />
+            </View>
+            <View style={styles.kpiTextContainer}>
+              <Text testID="kpi-accepted-count" style={styles.kpiValue}>{appointments.filter(a => a.status === 'accepted').length}</Text>
+              <Text style={styles.kpiLabel}>Accepted</Text>
+            </View>
+          </View>
+
+          <View style={[styles.kpiCard, styles.kpiCardAlert]}>
+            <View style={[styles.kpiIconWrapper, { backgroundColor: '#FEE2E2' }]}>
+              <AlertTriangle size={18} color="#DC2626" />
+            </View>
+            <View style={styles.kpiTextContainer}>
+              <Text testID="kpi-alerts-count" style={styles.kpiValueAlert}>0</Text>
+              <Text style={styles.kpiLabelAlert}>AI Alerts</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* QUICK ACTIONS REMOVED */}
+
+        {/* TODAY's SCHEDULE */}
+        <View style={styles.flatSection}>
+          <Text style={styles.flatSectionTitle}>Today's Schedule</Text>
+          <View style={styles.flatListContainer}>
+            
+            {appointments.length === 0 ? (
+              <View style={{ padding: 20, alignItems: 'center' }}>
+                <Text style={{ color: '#64748B', fontSize: 13 }}>No appointments today.</Text>
+              </View>
+            ) : (
+              appointments.slice(0, 3).map((appt, index) => (
+                <View key={appt.id || index} style={[styles.flatListItem, index === appointments.slice(0,3).length - 1 && styles.noBorder]}>
+                  <View style={styles.flatTimeCol}>
+                    <Text style={styles.flatTimeText}>{appt.appointment_time?.substring(0, 5) || '10:00'} <Text style={styles.flatAmPm}>AM</Text></Text>
+                  </View>
+                  <View style={styles.flatInfoCol}>
+                    <Text style={styles.flatPatientName}>{appt.patient_name || `Patient #${appt.patient_id}`}</Text>
+                    <Text style={styles.flatTreatmentText}>{appt.patient_notes || 'Consultation'}</Text>
+                  </View>
+                  <View style={appt.status === 'completed' ? styles.badgeSuccess : appt.status === 'scheduled' ? styles.badgeWarning : styles.badgePrimary}>
+                    <Text style={appt.status === 'completed' ? styles.badgeSuccessText : appt.status === 'scheduled' ? styles.badgeWarningText : styles.badgePrimaryText}>
+                      {appt.status?.toUpperCase() || 'SCHEDULED'}
                     </Text>
                   </View>
-                  <StatusPill 
-                    label={appt.status} 
-                    type={appt.status === 'accepted' ? 'success' : appt.status === 'pending' ? 'warning' : 'default'} 
-                  />
                 </View>
-
-                {appt.status === 'pending' && (
-                  <View style={styles.apptActions}>
-                    <TouchableOpacity style={[styles.btn, styles.btnAccept]} onPress={() => handleAccept(appt.id)}>
-                      <Check size={14} color="#fff" />
-                      <Text style={styles.btnAcceptText}>Accept</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.btn, styles.btnReject]} onPress={() => handleCancel(appt.id)}>
-                      <X size={14} color="#ef4444" />
-                      <Text style={styles.btnRejectText}>Reject</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-                {appt.status === 'accepted' && appt.consultation_type === 'virtual' && (
-                  <TouchableOpacity style={styles.btnJoin}>
-                    <Video size={16} color="#fff" />
-                    <Text style={styles.btnJoinText}>Join Video Call</Text>
-                  </TouchableOpacity>
-                )}
-              </GlassCard>
-            ))}
+              ))
+            )}
+            
           </View>
-        )}
-      </View>
-    </ScrollView>
+          {appointments.length > 0 && (
+            <TouchableOpacity style={styles.viewAllBtn}>
+              <Text style={styles.viewAllText}>View All →</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        {/* CURRENT QUEUE */}
+        <View style={styles.flatSection}>
+          <Text style={styles.flatSectionTitle}>Current Queue</Text>
+          <View style={styles.flatListContainer}>
+            
+            {appointments.filter(a => a.status === 'pending').length === 0 ? (
+              <View style={{ padding: 20, alignItems: 'center' }}>
+                <Text style={{ color: '#64748B', fontSize: 13 }}>No patients in queue.</Text>
+              </View>
+            ) : (
+              appointments.filter(a => a.status === 'pending').slice(0, 2).map((appt, index, arr) => (
+                <View key={appt.id || index} style={[styles.flatListItem, index === arr.length - 1 && styles.noBorder]}>
+                  <View style={index === 0 ? styles.queueDotHigh : styles.queueDotMed} />
+                  <View style={styles.queueInfoCol}>
+                    <Text style={styles.flatPatientName}>{appt.patient_name || `Patient #${appt.patient_id}`}</Text>
+                    <Text style={styles.flatTreatmentText}>Room {index + 2} • {appt.patient_notes || 'Waiting'}</Text>
+                  </View>
+                </View>
+              ))
+            )}
+
+          </View>
+          {appointments.filter(a => a.status === 'pending').length > 0 && (
+            <TouchableOpacity style={styles.viewAllBtn}>
+              <Text style={styles.viewAllText}>View Queue →</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+        
+        <View style={{ height: 24 }} />
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#F8FAFC',
   },
-  content: {
-    padding: 24,
+  mainContent: {
+    flex: 1,
   },
-  header: {
-    marginBottom: 32,
+  scrollContent: {
+    padding: 16, // Reduced padding
+    paddingTop: 16,
   },
-  titleRow: {
+  kpiGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginBottom: 20,
+  },
+  kpiCard: {
+    flex: 1,
+    minWidth: '45%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    padding: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.02,
+    shadowRadius: 6,
+    elevation: 1,
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
+    height: 72,
+  },
+  kpiCardAlert: {
+    borderColor: '#FECACA',
+    backgroundColor: '#FEF2F2',
+  },
+  kpiIconWrapper: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  kpiTextContainer: {
+    flex: 1,
+  },
+  kpiValue: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#0F172A',
+    lineHeight: 24,
+  },
+  kpiValueAlert: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#991B1B',
+    lineHeight: 24,
+  },
+  kpiLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#64748B',
+  },
+  kpiLabelAlert: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#DC2626',
+  },
+  alertFeed: {
+    backgroundColor: '#FEF2F2',
+    borderRadius: 16,
+    padding: 14,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#FECACA',
+  },
+  sectionHeaderAlerts: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 10,
   },
-  title: {
-    fontSize: 32,
-    fontWeight: '900',
-    color: '#1e293b',
-    letterSpacing: -0.5,
-  },
-  subtitle: {
-    fontSize: 15,
-    color: '#64748b',
-    marginTop: 6,
-    fontWeight: '500',
-  },
-  doctorSub: {
-    fontSize: 16,
+  sectionTitleAlert: {
+    fontSize: 13,
     fontWeight: '700',
-    color: '#1e293b',
-    marginTop: 4,
+    color: '#991B1B',
   },
-  kpiGridMobile: {
+  linkText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#DC2626',
+  },
+  alertItem: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-  },
-  kpiGridWeb: {
-    flexDirection: 'row',
-    gap: 16,
-    flexWrap: 'wrap',
-  },
-  kpiCard: {
-    width: '47%',
-    minWidth: 150,
-    padding: 18,
-    borderRadius: 20,
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
+    alignItems: 'flex-start',
     marginBottom: 8,
   },
-  iconBox: {
+  alertItemContent: {
+    marginLeft: 8,
+    flex: 1,
+  },
+  alertItemText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#7F1D1D',
+  },
+  alertTime: {
+    fontSize: 11,
+    color: '#DC2626',
+    marginTop: 2,
+    opacity: 0.8,
+  },
+  quickActionsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 24,
+    rowGap: 16,
+    paddingHorizontal: 4,
+  },
+  qaItem: {
+    width: '48%', // 2x2 grid
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 12,
+  },
+  qaIconSquare: {
     width: 40,
     height: 40,
     borderRadius: 12,
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 12,
-  },
-  kpiVal: {
-    fontSize: 22,
-    fontWeight: '900',
-    color: '#1e293b',
-  },
-  kpiLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#64748b',
-    marginTop: 4,
-  },
-  section: {
-    marginTop: 32,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#1e293b',
-    marginBottom: 16,
-  },
-  emptyBox: {
-    padding: 30,
-    borderRadius: 16,
-    backgroundColor: '#f8fafc',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.02,
+    shadowRadius: 6,
+    elevation: 1,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
-    alignItems: 'center',
+    borderColor: '#F1F5F9',
   },
-  emptyText: {
-    fontSize: 14,
-    color: '#94a3b8',
-    fontWeight: '500',
-  },
-  appointmentList: {
-    gap: 12,
-  },
-  apptCard: {
-    padding: 16,
-    borderRadius: 16,
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-  },
-  apptHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  apptPatient: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#1e293b',
-  },
-  apptMeta: {
+  qaText: {
     fontSize: 13,
-    color: '#64748b',
-    marginTop: 4,
-    fontWeight: '500',
+    fontWeight: '600',
+    color: '#1E293B',
   },
-  apptActions: {
-    flexDirection: 'row',
-    gap: 10,
-    marginTop: 16,
+  flatSection: {
+    marginBottom: 24,
   },
-  btn: {
+  flatSectionTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#0F172A',
+    marginBottom: 10,
+    paddingHorizontal: 4,
+  },
+  flatListContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#F1F5F9',
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.02,
+    shadowRadius: 6,
+    elevation: 1,
+  },
+  flatListItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 8,
+    paddingVertical: 12,
     paddingHorizontal: 16,
-    borderRadius: 8,
-    gap: 6,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F8FAFC',
+  },
+  noBorder: {
+    borderBottomWidth: 0,
+  },
+  flatTimeCol: {
+    width: 65,
+  },
+  flatTimeText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#0F172A',
+  },
+  flatAmPm: {
+    fontSize: 10,
+    color: '#64748B',
+  },
+  flatInfoCol: {
     flex: 1,
   },
-  btnAccept: {
-    backgroundColor: '#3b82f6',
-  },
-  btnAcceptText: {
-    color: '#fff',
-    fontWeight: '700',
+  flatPatientName: {
     fontSize: 13,
-  },
-  btnReject: {
-    backgroundColor: '#fef2f2',
-    borderWidth: 1,
-    borderColor: '#fca5a5',
-  },
-  btnRejectText: {
-    color: '#ef4444',
     fontWeight: '700',
-    fontSize: 13,
+    color: '#0F172A',
+    marginBottom: 2,
   },
-  btnJoin: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 10,
-    borderRadius: 8,
-    backgroundColor: '#10b981',
-    marginTop: 16,
-    gap: 6,
+  flatTreatmentText: {
+    fontSize: 11,
+    color: '#64748B',
   },
-  btnJoinText: {
-    color: '#fff',
+  badgeSuccess: {
+    backgroundColor: '#DCFCE7',
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  badgeSuccessText: {
+    fontSize: 10,
     fontWeight: '700',
-    fontSize: 14,
-  }
+    color: '#166534',
+  },
+  badgeWarning: {
+    backgroundColor: '#FEF3C7',
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  badgeWarningText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#92400E',
+  },
+  badgePrimary: {
+    backgroundColor: '#DBEAFE',
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  badgePrimaryText: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#1E40AF',
+  },
+  viewAllBtn: {
+    marginTop: 10,
+    alignSelf: 'center',
+  },
+  viewAllText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#2563EB',
+  },
+  queueDotHigh: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#EF4444',
+    marginRight: 12,
+  },
+  queueDotMed: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#F59E0B',
+    marginRight: 12,
+  },
+  queueInfoCol: {
+    flex: 1,
+  },
 });
 
 export default Dashboard;

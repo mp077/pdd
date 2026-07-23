@@ -1,0 +1,1002 @@
+[
+  {
+    "name": "Amoxicillin",
+    "generic": "Amoxicillin",
+    "category": "Antibiotic",
+    "strengths": ["250 mg", "500 mg", "625 mg"],
+    "form": "Capsule",
+    "frequencies": ["Once Daily", "Twice Daily", "Three Times Daily"],
+    "durations": ["3 Days", "5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Augmentin 625",
+    "generic": "Amoxicillin + Clavulanate",
+    "category": "Antibiotic",
+    "strengths": ["375 mg", "625 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily", "Three Times Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Azithromycin",
+    "generic": "Azithromycin",
+    "category": "Antibiotic",
+    "strengths": ["250 mg", "500 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily", "Twice Daily"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["After Food", "Before Food"]
+  },
+  {
+    "name": "Ciprofloxacin",
+    "generic": "Ciprofloxacin",
+    "category": "Antibiotic",
+    "strengths": ["250 mg", "500 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Metronidazole",
+    "generic": "Metronidazole",
+    "category": "Antibiotic",
+    "strengths": ["200 mg", "400 mg"],
+    "form": "Tablet",
+    "frequencies": ["Three Times Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Ibuprofen",
+    "generic": "Ibuprofen",
+    "category": "Pain Killer",
+    "strengths": ["200 mg", "400 mg", "600 mg"],
+    "form": "Tablet",
+    "frequencies": ["SOS (If Needed)", "Twice Daily", "Three Times Daily"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["After Food", "If Pain Persists"]
+  },
+  {
+    "name": "Paracetamol",
+    "generic": "Paracetamol",
+    "category": "Pain Killer",
+    "strengths": ["500 mg", "650 mg"],
+    "form": "Tablet",
+    "frequencies": ["SOS (If Needed)", "Three Times Daily"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Diclofenac",
+    "generic": "Diclofenac Sodium",
+    "category": "Anti-inflammatory",
+    "strengths": ["50 mg", "100 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily", "SOS (If Needed)"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Diclofenac Gel",
+    "generic": "Diclofenac Sodium",
+    "category": "Anti-inflammatory",
+    "strengths": ["1%"],
+    "form": "Gel",
+    "frequencies": ["Twice Daily", "Three Times Daily"],
+    "durations": ["5 Days"],
+    "instructions": ["Apply Externally"]
+  },
+  {
+    "name": "Aceclofenac",
+    "generic": "Aceclofenac",
+    "category": "Pain Killer",
+    "strengths": ["100 mg", "200 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Ketorolac",
+    "generic": "Ketorolac",
+    "category": "Pain Killer",
+    "strengths": ["10 mg"],
+    "form": "Tablet",
+    "frequencies": ["SOS (If Needed)", "Every 6 Hours"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Tramadol",
+    "generic": "Tramadol HCL",
+    "category": "Pain Killer",
+    "strengths": ["50 mg", "100 mg"],
+    "form": "Capsule",
+    "frequencies": ["Twice Daily", "SOS (If Needed)"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Naproxen",
+    "generic": "Naproxen",
+    "category": "Anti-inflammatory",
+    "strengths": ["250 mg", "500 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily"],
+    "durations": ["5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Celecoxib",
+    "generic": "Celecoxib",
+    "category": "Anti-inflammatory",
+    "strengths": ["100 mg", "200 mg"],
+    "form": "Capsule",
+    "frequencies": ["Once Daily", "Twice Daily"],
+    "durations": ["5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Etoricoxib",
+    "generic": "Etoricoxib",
+    "category": "Anti-inflammatory",
+    "strengths": ["60 mg", "90 mg", "120 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Aspirin",
+    "generic": "Acetylsalicylic Acid",
+    "category": "Pain Killer",
+    "strengths": ["75 mg", "150 mg", "300 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["1 Month"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Fluconazole",
+    "generic": "Fluconazole",
+    "category": "Antifungal",
+    "strengths": ["150 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Weekly"],
+    "durations": ["2 Weeks", "4 Weeks"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Clotrimazole",
+    "generic": "Clotrimazole",
+    "category": "Antifungal",
+    "strengths": ["1%", "2%"],
+    "form": "Cream",
+    "frequencies": ["Twice Daily"],
+    "durations": ["7 Days", "14 Days"],
+    "instructions": ["Apply Externally"]
+  },
+  {
+    "name": "Miconazole",
+    "generic": "Miconazole",
+    "category": "Antifungal",
+    "strengths": ["2%"],
+    "form": "Oral Gel",
+    "frequencies": ["Three Times Daily"],
+    "durations": ["7 Days"],
+    "instructions": ["Apply on Lesion"]
+  },
+  {
+    "name": "Chlorhexidine Mouthwash",
+    "generic": "Chlorhexidine Gluconate",
+    "category": "Mouthwash",
+    "strengths": ["0.2% w/v"],
+    "form": "Liquid",
+    "frequencies": ["Twice Daily"],
+    "durations": ["7 Days", "14 Days"],
+    "instructions": ["After Brushing", "Morning & Night"]
+  },
+  {
+    "name": "Povidone Iodine",
+    "generic": "Povidone Iodine",
+    "category": "Antiseptic",
+    "strengths": ["2%", "5%"],
+    "form": "Liquid",
+    "frequencies": ["Twice Daily", "Three Times Daily"],
+    "durations": ["7 Days"],
+    "instructions": ["Warm Saline Rinse", "Use as Mouthwash"]
+  },
+  {
+    "name": "Lidocaine Gel",
+    "generic": "Lidocaine Hydrochloride",
+    "category": "Local Anesthetic",
+    "strengths": ["2%", "5%"],
+    "form": "Dental Gel",
+    "frequencies": ["SOS (If Needed)"],
+    "durations": ["3 Days"],
+    "instructions": ["Apply on Gums"]
+  },
+  {
+    "name": "Benzocaine",
+    "generic": "Benzocaine",
+    "category": "Local Anesthetic",
+    "strengths": ["10%", "20%"],
+    "form": "Dental Gel",
+    "frequencies": ["SOS (If Needed)"],
+    "durations": ["3 Days"],
+    "instructions": ["Apply on Gums"]
+  },
+  {
+    "name": "Pantoprazole",
+    "generic": "Pantoprazole",
+    "category": "Proton Pump Inhibitor",
+    "strengths": ["40 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["Before Food", "Morning"]
+  },
+  {
+    "name": "Omeprazole",
+    "generic": "Omeprazole",
+    "category": "Proton Pump Inhibitor",
+    "strengths": ["20 mg"],
+    "form": "Capsule",
+    "frequencies": ["Once Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["Before Food", "Morning"]
+  },
+  {
+    "name": "Rabeprazole",
+    "generic": "Rabeprazole",
+    "category": "Proton Pump Inhibitor",
+    "strengths": ["20 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["Before Food", "Morning"]
+  },
+  {
+    "name": "Vitamin C",
+    "generic": "Ascorbic Acid",
+    "category": "Vitamin Supplement",
+    "strengths": ["500 mg"],
+    "form": "Chewable Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["1 Month"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Vitamin B Complex",
+    "generic": "B-Complex",
+    "category": "Vitamin Supplement",
+    "strengths": ["1 Capsule"],
+    "form": "Capsule",
+    "frequencies": ["Once Daily"],
+    "durations": ["1 Month"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Calcium + D3",
+    "generic": "Calcium Carbonate + Cholecalciferol",
+    "category": "Calcium Supplement",
+    "strengths": ["500 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily", "Twice Daily"],
+    "durations": ["1 Month", "3 Months"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Cetirizine",
+    "generic": "Cetirizine",
+    "category": "Anti-allergy",
+    "strengths": ["10 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["Night", "Bedtime"]
+  },
+  {
+    "name": "Levocetirizine",
+    "generic": "Levocetirizine",
+    "category": "Anti-allergy",
+    "strengths": ["5 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["Night", "Bedtime"]
+  },
+  {
+    "name": "Prednisolone",
+    "generic": "Prednisolone",
+    "category": "Steroid",
+    "strengths": ["5 mg", "10 mg", "20 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily", "Twice Daily"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Dexamethasone",
+    "generic": "Dexamethasone",
+    "category": "Steroid",
+    "strengths": ["0.5 mg", "4 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily", "Twice Daily"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Choline Salicylate Gel",
+    "generic": "Choline Salicylate",
+    "category": "Dental Gel",
+    "strengths": ["8.7%"],
+    "form": "Gel",
+    "frequencies": ["Three Times Daily", "SOS (If Needed)"],
+    "durations": ["5 Days"],
+    "instructions": ["Apply on Ulcer"]
+  },
+  {
+    "name": "Triamcinolone Acetonide",
+    "generic": "Triamcinolone",
+    "category": "Oral Ointment",
+    "strengths": ["0.1%"],
+    "form": "Paste",
+    "frequencies": ["Twice Daily", "Three Times Daily"],
+    "durations": ["5 Days"],
+    "instructions": ["Apply on Ulcer"]
+  },
+  {
+    "name": "Clindamycin",
+    "generic": "Clindamycin",
+    "category": "Antibiotic",
+    "strengths": ["150 mg", "300 mg"],
+    "form": "Capsule",
+    "frequencies": ["Three Times Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Doxycycline",
+    "generic": "Doxycycline",
+    "category": "Antibiotic",
+    "strengths": ["100 mg"],
+    "form": "Capsule",
+    "frequencies": ["Twice Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food", "Avoid Dairy"]
+  },
+  {
+    "name": "Levofloxacin",
+    "generic": "Levofloxacin",
+    "category": "Antibiotic",
+    "strengths": ["250 mg", "500 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily", "Twice Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Amikacin",
+    "generic": "Amikacin",
+    "category": "Antibiotic",
+    "strengths": ["250 mg", "500 mg"],
+    "form": "Injection",
+    "frequencies": ["Twice Daily"],
+    "durations": ["5 Days"],
+    "instructions": ["Clinic Administration"]
+  },
+  {
+    "name": "Erythromycin",
+    "generic": "Erythromycin",
+    "category": "Antibiotic",
+    "strengths": ["250 mg", "500 mg"],
+    "form": "Tablet",
+    "frequencies": ["Three Times Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Lornoxicam",
+    "generic": "Lornoxicam",
+    "category": "Pain Killer",
+    "strengths": ["4 mg", "8 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Piroxicam",
+    "generic": "Piroxicam",
+    "category": "Anti-inflammatory",
+    "strengths": ["20 mg"],
+    "form": "Capsule",
+    "frequencies": ["Once Daily"],
+    "durations": ["5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Meloxicam",
+    "generic": "Meloxicam",
+    "category": "Anti-inflammatory",
+    "strengths": ["7.5 mg", "15 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Mefenamic Acid",
+    "generic": "Mefenamic Acid",
+    "category": "Pain Killer",
+    "strengths": ["250 mg", "500 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily", "Three Times Daily"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Drotaverine",
+    "generic": "Drotaverine",
+    "category": "Pain Killer",
+    "strengths": ["40 mg", "80 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily", "SOS (If Needed)"],
+    "durations": ["3 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Serratiopeptidase",
+    "generic": "Serratiopeptidase",
+    "category": "Anti-inflammatory",
+    "strengths": ["10 mg", "15 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily", "Three Times Daily"],
+    "durations": ["5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Nimesulide",
+    "generic": "Nimesulide",
+    "category": "Pain Killer",
+    "strengths": ["100 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Indomethacin",
+    "generic": "Indomethacin",
+    "category": "Anti-inflammatory",
+    "strengths": ["25 mg", "50 mg"],
+    "form": "Capsule",
+    "frequencies": ["Twice Daily"],
+    "durations": ["5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Roxithromycin",
+    "generic": "Roxithromycin",
+    "category": "Antibiotic",
+    "strengths": ["150 mg", "300 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["Before Food"]
+  },
+  {
+    "name": "Ofloxacin",
+    "generic": "Ofloxacin",
+    "category": "Antibiotic",
+    "strengths": ["200 mg", "400 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Ornidazole",
+    "generic": "Ornidazole",
+    "category": "Antibiotic",
+    "strengths": ["500 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Secnidazole",
+    "generic": "Secnidazole",
+    "category": "Antibiotic",
+    "strengths": ["1 g"],
+    "form": "Tablet",
+    "frequencies": ["Single Dose"],
+    "durations": ["1 Day"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Tinidazole",
+    "generic": "Tinidazole",
+    "category": "Antibiotic",
+    "strengths": ["500 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Ketoconazole",
+    "generic": "Ketoconazole",
+    "category": "Antifungal",
+    "strengths": ["200 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["14 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Itraconazole",
+    "generic": "Itraconazole",
+    "category": "Antifungal",
+    "strengths": ["100 mg", "200 mg"],
+    "form": "Capsule",
+    "frequencies": ["Once Daily", "Twice Daily"],
+    "durations": ["7 Days", "14 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Terbinafine",
+    "generic": "Terbinafine",
+    "category": "Antifungal",
+    "strengths": ["250 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["14 Days", "1 Month"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Nystatin",
+    "generic": "Nystatin",
+    "category": "Antifungal",
+    "strengths": ["100,000 U", "500,000 U"],
+    "form": "Oral Drops",
+    "frequencies": ["Four Times Daily"],
+    "durations": ["7 Days", "14 Days"],
+    "instructions": ["Apply Externally"]
+  },
+  {
+    "name": "Chlorhexidine + Benzydamine",
+    "generic": "Chlorhexidine + Benzydamine",
+    "category": "Mouthwash",
+    "strengths": ["0.12%"],
+    "form": "Liquid",
+    "frequencies": ["Twice Daily"],
+    "durations": ["7 Days", "14 Days"],
+    "instructions": ["Morning & Night", "Do not swallow"]
+  },
+  {
+    "name": "Hydrogen Peroxide",
+    "generic": "Hydrogen Peroxide",
+    "category": "Mouthwash",
+    "strengths": ["1.5%"],
+    "form": "Liquid",
+    "frequencies": ["Twice Daily", "Three Times Daily"],
+    "durations": ["7 Days"],
+    "instructions": ["Use as Mouthwash"]
+  },
+  {
+    "name": "Sodium Hyaluronate Gel",
+    "generic": "Sodium Hyaluronate",
+    "category": "Dental Gel",
+    "strengths": ["0.2%"],
+    "form": "Gel",
+    "frequencies": ["Three Times Daily"],
+    "durations": ["7 Days", "14 Days"],
+    "instructions": ["Apply on Gums"]
+  },
+  {
+    "name": "Potassium Nitrate",
+    "generic": "Potassium Nitrate",
+    "category": "Dental Gel",
+    "strengths": ["5%"],
+    "form": "Gel",
+    "frequencies": ["Twice Daily"],
+    "durations": ["1 Month"],
+    "instructions": ["Apply on Teeth"]
+  },
+  {
+    "name": "Fluoride Varnish",
+    "generic": "Sodium Fluoride",
+    "category": "Dental Gel",
+    "strengths": ["5%"],
+    "form": "Varnish",
+    "frequencies": ["Single Dose"],
+    "durations": ["1 Day"],
+    "instructions": ["Clinic Administration"]
+  },
+  {
+    "name": "Articaine",
+    "generic": "Articaine",
+    "category": "Local Anesthetic",
+    "strengths": ["4%"],
+    "form": "Injection",
+    "frequencies": ["Single Dose"],
+    "durations": ["1 Day"],
+    "instructions": ["Clinic Administration"]
+  },
+  {
+    "name": "Bupivacaine",
+    "generic": "Bupivacaine",
+    "category": "Local Anesthetic",
+    "strengths": ["0.5%"],
+    "form": "Injection",
+    "frequencies": ["Single Dose"],
+    "durations": ["1 Day"],
+    "instructions": ["Clinic Administration"]
+  },
+  {
+    "name": "Mepivacaine",
+    "generic": "Mepivacaine",
+    "category": "Local Anesthetic",
+    "strengths": ["3%"],
+    "form": "Injection",
+    "frequencies": ["Single Dose"],
+    "durations": ["1 Day"],
+    "instructions": ["Clinic Administration"]
+  },
+  {
+    "name": "Esomeprazole",
+    "generic": "Esomeprazole",
+    "category": "Proton Pump Inhibitor",
+    "strengths": ["40 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["Before Food", "Morning"]
+  },
+  {
+    "name": "Lansoprazole",
+    "generic": "Lansoprazole",
+    "category": "Proton Pump Inhibitor",
+    "strengths": ["30 mg"],
+    "form": "Capsule",
+    "frequencies": ["Once Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["Before Food", "Morning"]
+  },
+  {
+    "name": "Ranitidine",
+    "generic": "Ranitidine",
+    "category": "Proton Pump Inhibitor",
+    "strengths": ["150 mg", "300 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["Before Food"]
+  },
+  {
+    "name": "Folic Acid",
+    "generic": "Folic Acid",
+    "category": "Vitamin Supplement",
+    "strengths": ["5 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["1 Month"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Vitamin D3",
+    "generic": "Cholecalciferol",
+    "category": "Vitamin Supplement",
+    "strengths": ["60,000 IU"],
+    "form": "Capsule",
+    "frequencies": ["Once Weekly"],
+    "durations": ["4 Weeks", "8 Weeks"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Zinc Sulfate",
+    "generic": "Zinc",
+    "category": "Vitamin Supplement",
+    "strengths": ["20 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["14 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Magnesium",
+    "generic": "Magnesium Citrate",
+    "category": "Vitamin Supplement",
+    "strengths": ["400 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["1 Month"],
+    "instructions": ["Night"]
+  },
+  {
+    "name": "Loratadine",
+    "generic": "Loratadine",
+    "category": "Anti-allergy",
+    "strengths": ["10 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["5 Days"],
+    "instructions": ["Night", "Bedtime"]
+  },
+  {
+    "name": "Fexofenadine",
+    "generic": "Fexofenadine",
+    "category": "Anti-allergy",
+    "strengths": ["120 mg", "180 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["5 Days"],
+    "instructions": ["Morning"]
+  },
+  {
+    "name": "Hydrocortisone",
+    "generic": "Hydrocortisone",
+    "category": "Steroid",
+    "strengths": ["1%"],
+    "form": "Cream",
+    "frequencies": ["Twice Daily"],
+    "durations": ["7 Days"],
+    "instructions": ["Apply Externally"]
+  },
+  {
+    "name": "Betamethasone",
+    "generic": "Betamethasone",
+    "category": "Steroid",
+    "strengths": ["0.5 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Methylprednisolone",
+    "generic": "Methylprednisolone",
+    "category": "Steroid",
+    "strengths": ["4 mg", "8 mg", "16 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily", "Twice Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Deflazacort",
+    "generic": "Deflazacort",
+    "category": "Steroid",
+    "strengths": ["6 mg", "30 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Chlorpheniramine",
+    "generic": "Chlorpheniramine",
+    "category": "Anti-allergy",
+    "strengths": ["4 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily"],
+    "durations": ["3 Days", "5 Days"],
+    "instructions": ["Night"]
+  },
+  {
+    "name": "Montelukast",
+    "generic": "Montelukast",
+    "category": "Anti-allergy",
+    "strengths": ["10 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["1 Month"],
+    "instructions": ["Night"]
+  },
+  {
+    "name": "Gabapentin",
+    "generic": "Gabapentin",
+    "category": "Pain Killer",
+    "strengths": ["100 mg", "300 mg"],
+    "form": "Capsule",
+    "frequencies": ["Twice Daily", "Three Times Daily"],
+    "durations": ["1 Month"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Pregabalin",
+    "generic": "Pregabalin",
+    "category": "Pain Killer",
+    "strengths": ["75 mg", "150 mg"],
+    "form": "Capsule",
+    "frequencies": ["Twice Daily"],
+    "durations": ["1 Month"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Duloxetine",
+    "generic": "Duloxetine",
+    "category": "Pain Killer",
+    "strengths": ["20 mg", "30 mg"],
+    "form": "Capsule",
+    "frequencies": ["Once Daily"],
+    "durations": ["1 Month"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Amitriptyline",
+    "generic": "Amitriptyline",
+    "category": "Pain Killer",
+    "strengths": ["10 mg", "25 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["1 Month"],
+    "instructions": ["Bedtime"]
+  },
+  {
+    "name": "Cefixime",
+    "generic": "Cefixime",
+    "category": "Antibiotic",
+    "strengths": ["200 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Cefpodoxime",
+    "generic": "Cefpodoxime",
+    "category": "Antibiotic",
+    "strengths": ["200 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Cefuroxime",
+    "generic": "Cefuroxime",
+    "category": "Antibiotic",
+    "strengths": ["250 mg", "500 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Lincomycin",
+    "generic": "Lincomycin",
+    "category": "Antibiotic",
+    "strengths": ["500 mg"],
+    "form": "Capsule",
+    "frequencies": ["Three Times Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Sparfloxacin",
+    "generic": "Sparfloxacin",
+    "category": "Antibiotic",
+    "strengths": ["200 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Moxifloxacin",
+    "generic": "Moxifloxacin",
+    "category": "Antibiotic",
+    "strengths": ["400 mg"],
+    "form": "Tablet",
+    "frequencies": ["Once Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Clobetasol",
+    "generic": "Clobetasol Propionate",
+    "category": "Oral Ointment",
+    "strengths": ["0.05%"],
+    "form": "Ointment",
+    "frequencies": ["Twice Daily"],
+    "durations": ["7 Days"],
+    "instructions": ["Apply Externally"]
+  },
+  {
+    "name": "Salicylic Acid",
+    "generic": "Salicylic Acid",
+    "category": "Antiseptic",
+    "strengths": ["2%"],
+    "form": "Liquid",
+    "frequencies": ["Once Daily"],
+    "durations": ["14 Days"],
+    "instructions": ["Apply Externally"]
+  },
+  {
+    "name": "Tetracycline",
+    "generic": "Tetracycline",
+    "category": "Antibiotic",
+    "strengths": ["250 mg", "500 mg"],
+    "form": "Capsule",
+    "frequencies": ["Four Times Daily"],
+    "durations": ["7 Days", "14 Days"],
+    "instructions": ["Before Food"]
+  },
+  {
+    "name": "Minocycline",
+    "generic": "Minocycline",
+    "category": "Antibiotic",
+    "strengths": ["50 mg", "100 mg"],
+    "form": "Capsule",
+    "frequencies": ["Twice Daily"],
+    "durations": ["7 Days", "14 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Gentamicin",
+    "generic": "Gentamicin",
+    "category": "Antibiotic",
+    "strengths": ["80 mg"],
+    "form": "Injection",
+    "frequencies": ["Three Times Daily"],
+    "durations": ["5 Days"],
+    "instructions": ["Clinic Administration"]
+  },
+  {
+    "name": "Vancomycin",
+    "generic": "Vancomycin",
+    "category": "Antibiotic",
+    "strengths": ["500 mg"],
+    "form": "Injection",
+    "frequencies": ["Twice Daily"],
+    "durations": ["7 Days"],
+    "instructions": ["Clinic Administration"]
+  },
+  {
+    "name": "Clarithromycin",
+    "generic": "Clarithromycin",
+    "category": "Antibiotic",
+    "strengths": ["250 mg", "500 mg"],
+    "form": "Tablet",
+    "frequencies": ["Twice Daily"],
+    "durations": ["7 Days", "10 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Ampicillin",
+    "generic": "Ampicillin",
+    "category": "Antibiotic",
+    "strengths": ["500 mg"],
+    "form": "Capsule",
+    "frequencies": ["Four Times Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["Before Food"]
+  },
+  {
+    "name": "Amoxicillin + Dicloxacillin",
+    "generic": "Amoxicillin + Dicloxacillin",
+    "category": "Antibiotic",
+    "strengths": ["500 mg"],
+    "form": "Capsule",
+    "frequencies": ["Three Times Daily"],
+    "durations": ["5 Days", "7 Days"],
+    "instructions": ["After Food"]
+  },
+  {
+    "name": "Silver Sulfadiazine",
+    "generic": "Silver Sulfadiazine",
+    "category": "Antiseptic",
+    "strengths": ["1%"],
+    "form": "Cream",
+    "frequencies": ["Twice Daily"],
+    "durations": ["7 Days", "14 Days"],
+    "instructions": ["Apply Externally"]
+  }
+]

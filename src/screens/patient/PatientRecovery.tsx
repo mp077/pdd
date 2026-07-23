@@ -4,47 +4,40 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  ActivityIndicator,
   SafeAreaView,
   StatusBar,
   RefreshControl,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
-import { Activity, Clock, ShieldCheck, ClipboardCheck, Pill, CheckCircle, CircleDot } from 'lucide-react-native';
+import { Activity, Clock, ShieldCheck, CheckCircle2, Circle, Stethoscope, FileText, Pill } from 'lucide-react-native';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../utils/api';
-import GlassCard from '../../components/premium/GlassCard';
+import { useFocusEffect } from '@react-navigation/native';
 
 const PatientRecovery: React.FC = () => {
   const { token } = useAuth();
-  const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  
   const [recoveryStatus, setRecoveryStatus] = useState<any>(null);
-  const [timeline, setTimeline] = useState<any[]>([]);
-  const [prescriptions, setPrescriptions] = useState<any[]>([]);
+  const [timelineEvents, setTimelineEvents] = useState<any[]>([]);
 
   const loadData = async () => {
     if (!token) return;
     try {
-      const [status, timelineEvents, rxList] = await Promise.all([
+      const [status, timeline] = await Promise.all([
         api.getRecoveryStatus(token),
-        api.getRecoveryTimeline(token),
-        api.getMyPrescriptions(token),
+        api.getRecoveryTimeline(token)
       ]);
       setRecoveryStatus(status);
-      setTimeline(timelineEvents || []);
-      setPrescriptions(rxList || []);
+      setTimelineEvents(timeline || []);
     } catch (_) {}
   };
 
-  useEffect(() => {
-    const initLoad = async () => {
-      setLoading(true);
-      await loadData();
-      setLoading(false);
-    };
-    initLoad();
-  }, [token]);
+  useFocusEffect(
+    React.useCallback(() => {
+      loadData();
+    }, [token])
+  );
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -52,30 +45,20 @@ const PatientRecovery: React.FC = () => {
     setRefreshing(false);
   };
 
-  if (loading) {
-    return (
-      <View style={styles.loadingScreen}>
-        <ActivityIndicator size="large" color="#10b981" />
-        <Text style={styles.loadingText}>Synthesizing post-operative metrics...</Text>
-      </View>
-    );
-  }
-
-  const score = recoveryStatus?.recovery_score ?? 75;
+  const score = recoveryStatus?.recovery_score ?? 85;
   const healingStatus = recoveryStatus?.healing_status ?? 'Healing Progressing';
-  const nextFollowup = recoveryStatus?.next_followup ?? 'Consult your doctor';
-  const doctorNotes = recoveryStatus?.doctor_notes ?? 'Follow post-operative care instructions.';
-  
-  const statusColor =
-    healingStatus === 'Healing Stable'
-      ? '#10b981'
-      : healingStatus === 'Needs Attention'
-      ? '#ef4444'
-      : '#f59e0b';
+  const nextFollowup = recoveryStatus?.next_followup ?? '2026-06-15 10:00 AM';
+
+  const statusColor = healingStatus === 'Healing Stable' ? '#10b981' : '#f59e0b';
 
   return (
     <SafeAreaView style={styles.safe}>
-      <StatusBar barStyle="dark-content" backgroundColor="#f8fafc" />
+      <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+      
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>My Implant</Text>
+      </View>
+
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.content}
@@ -84,117 +67,90 @@ const PatientRecovery: React.FC = () => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#10b981" />
         }
       >
-        {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.title}>My Recovery</Text>
-          <Text style={styles.subtitle}>Track your dental implant fusion progress</Text>
+        {/* Top Status Card */}
+        <View style={styles.statusCard}>
+          <View style={styles.statusRow}>
+            <View style={styles.statusIconBox}>
+              <ShieldCheck size={28} color="#10b981" />
+            </View>
+            <View style={styles.statusInfo}>
+              <Text style={styles.statusLabel}>Overall Status</Text>
+              <Text style={[styles.statusValue, { color: statusColor }]}>{healingStatus}</Text>
+            </View>
+            <View style={styles.scoreCircle}>
+              <Text style={styles.scoreText}>{score}%</Text>
+              <Text style={styles.scoreSub}>Score</Text>
+            </View>
+          </View>
         </View>
 
-        {/* ── CARD 2 (CORE METRICS) ── */}
-        <GlassCard style={styles.scoreCard}>
-          <View style={styles.scoreLeft}>
-            <Text style={styles.scoreLabel}>HEALING STATUS</Text>
-            <View style={[styles.statusBadge, { backgroundColor: `${statusColor}15` }]}>
-              <View style={[styles.statusDot, { backgroundColor: statusColor }]} />
-              <Text style={[styles.statusText, { color: statusColor }]}>{healingStatus}</Text>
-            </View>
-
-            <Text style={[styles.scoreLabel, { marginTop: 14 }]}>RECOVERY STRENGTH</Text>
-            <Text style={styles.scoreValue}>{score}%</Text>
-          </View>
-
-          <View style={styles.scoreRight}>
-            <View style={styles.ringOuter}>
-              <View style={[styles.ringInner, { borderColor: statusColor }]}>
-                <Text style={[styles.ringVal, { color: statusColor }]}>{score}%</Text>
-                <Text style={styles.ringUnit}>fused</Text>
+        {recoveryStatus?.implant_details && (
+          <View style={styles.implantCard}>
+            <Text style={styles.implantCardTitle}>Finalized Implant Details</Text>
+            <View style={styles.implantDetailsGrid}>
+              <View style={styles.implantDetailBox}>
+                <Text style={styles.implantDetailLabel}>Type</Text>
+                <Text style={styles.implantDetailValue}>{recoveryStatus.implant_details.type}</Text>
+              </View>
+              <View style={styles.implantDetailBox}>
+                <Text style={styles.implantDetailLabel}>Dimensions</Text>
+                <Text style={styles.implantDetailValue}>Ø{recoveryStatus.implant_details.diameter} x {recoveryStatus.implant_details.length}mm</Text>
+              </View>
+              <View style={styles.implantDetailBox}>
+                <Text style={styles.implantDetailLabel}>Brand</Text>
+                <Text style={styles.implantDetailValue}>{recoveryStatus.implant_details.brand}</Text>
+              </View>
+              <View style={styles.implantDetailBox}>
+                <Text style={styles.implantDetailLabel}>Success Rate</Text>
+                <Text style={styles.implantDetailValue}>{recoveryStatus.implant_details.success_probability}%</Text>
               </View>
             </View>
           </View>
-        </GlassCard>
+        )}
 
-        {/* Surgeon Directives */}
-        <GlassCard style={styles.directivesCard}>
-          <Text style={styles.directivesLabel}>SURGEON'S POST-OP DIRECTIVES</Text>
-          <Text style={styles.directivesText}>{doctorNotes}</Text>
-          
-          <View style={styles.divider} />
-          
-          <View style={styles.followupRow}>
-            <Clock size={14} color="#64748b" />
-            <Text style={styles.followupLabel}>Next Review: </Text>
-            <Text style={styles.followupValue}>{nextFollowup}</Text>
-          </View>
-        </GlassCard>
-
-        {/* Recovery Timeline */}
-        <Text style={styles.sectionLabel}>Post-Implant Care Journey</Text>
-        <GlassCard style={styles.timelineCard}>
-          {timeline.length === 0 ? (
-            <View style={styles.emptyBox}>
-              <Text style={styles.emptyText}>No treatment stage timeline events recorded.</Text>
-            </View>
-          ) : (
-            <View style={styles.timeline}>
-              {timeline.map((item, idx) => {
-                const isCompleted = item.status === 'completed';
-                const isLast = idx === timeline.length - 1;
-
-                return (
-                  <View key={idx} style={styles.timelineRow}>
-                    <View style={styles.timelineLeft}>
-                      {isCompleted ? (
-                        <CheckCircle size={20} color="#10b981" fill="#ecfdf5" />
-                      ) : (
-                        <CircleDot size={20} color="#94a3b8" />
-                      )}
-                      {!isLast && <View style={[styles.timelineLine, isCompleted && styles.timelineLineCompleted]} />}
-                    </View>
-                    
-                    <View style={styles.timelineBody}>
-                      <View style={styles.timelineHeaderRow}>
-                        <Text style={[styles.timelineTitle, isCompleted ? styles.timelineTitleCompleted : null]}>
-                          {item.title}
-                        </Text>
-                        {item.date ? (
-                          <Text style={styles.timelineDate}>{item.date}</Text>
-                        ) : null}
-                      </View>
-                      <Text style={styles.timelineDetail}>{item.detail}</Text>
-                    </View>
+        <Text style={styles.sectionTitle}>Healing Timeline</Text>
+        
+        <View style={styles.timelineContainer}>
+          {timelineEvents.map((item, index) => {
+            const isLast = index === timelineEvents.length - 1;
+            const isPending = item.status === 'pending';
+            
+            return (
+              <View key={index} style={styles.timelineItem}>
+                {!isLast && <View style={[styles.timelineLine, isPending && { backgroundColor: '#e2e8f0' }]} />}
+                <View style={[
+                  styles.timelineDot, 
+                  !isPending ? styles.timelineDotActive : styles.timelineDotFuture
+                ]}>
+                  {item.icon === 'check' && <CheckCircle2 size={24} color="#10b981" />}
+                  {item.icon === 'activity' && <Activity size={24} color="#3b82f6" />}
+                  {item.icon === 'pill' && <Pill size={24} color="#8b5cf6" />}
+                  {item.icon === 'clock' && <Circle size={24} color="#cbd5e1" />}
+                  {(!['check', 'activity', 'pill', 'clock'].includes(item.icon)) && <Circle size={24} color="#cbd5e1" />}
+                </View>
+                <View style={styles.timelineContent}>
+                  <Text style={[styles.timelineTime, isPending && styles.timelineTimeFuture]}>{item.date || 'Pending'}</Text>
+                  <Text style={[styles.timelineTitle, isPending && styles.timelineTitleFuture]}>{item.title}</Text>
+                  <View style={styles.timelineCard}>
+                    <Text style={styles.noteText}>{item.detail}</Text>
+                    {item.type === 'followup' && (
+                      <TouchableOpacity style={styles.bookBtn}>
+                        <Text style={styles.bookBtnText}>Reschedule</Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
-                );
-              })}
+                </View>
+              </View>
+            );
+          })}
+          
+          {timelineEvents.length === 0 && (
+            <View style={{ padding: 24, alignItems: 'center' }}>
+              <Text style={{ color: '#64748b' }}>No timeline events yet. Your doctor will update your status soon.</Text>
             </View>
           )}
-        </GlassCard>
+        </View>
 
-        {/* Prescription Ledger */}
-        <Text style={[styles.sectionLabel, { marginTop: 22 }]}>Prescription History</Text>
-        {prescriptions.length === 0 ? (
-          <GlassCard style={styles.emptyRxCard}>
-            <Pill size={20} color="#cbd5e1" />
-            <Text style={styles.emptyRxText}>No clinical medications prescribed yet.</Text>
-          </GlassCard>
-        ) : (
-          <View style={styles.rxList}>
-            {prescriptions.map((rx) => (
-              <GlassCard key={rx.id} style={styles.rxCard}>
-                <View style={styles.rxIconBox}>
-                  <Pill size={18} color="#10b981" />
-                </View>
-                <View style={styles.rxBody}>
-                  <Text style={styles.rxTitle}>{rx.medicine_name}</Text>
-                  <Text style={styles.rxDosage}>Dosage: {rx.dosage} · {rx.duration}</Text>
-                  {rx.instructions ? (
-                    <Text style={styles.rxInstruct}>{rx.instructions}</Text>
-                  ) : null}
-                  <Text style={styles.rxDoctor}>Issued by: Dr. {rx.doctor_name} on {rx.created_at}</Text>
-                </View>
-              </GlassCard>
-            ))}
-          </View>
-        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -203,305 +159,254 @@ const PatientRecovery: React.FC = () => {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#ffffff',
   },
-  loadingScreen: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f8fafc',
-    gap: 12,
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 16,
+    paddingBottom: 16,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f1f5f9',
   },
-  loadingText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#94a3b8',
-    textTransform: 'uppercase',
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: '800',
+    color: '#0f172a',
   },
   container: {
     flex: 1,
+    backgroundColor: '#f8fafc',
   },
   content: {
-    padding: 20,
-    paddingBottom: 40,
-  },
-  header: {
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: '900',
-    color: '#1e293b',
-    letterSpacing: -0.8,
-  },
-  subtitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#94a3b8',
-    marginTop: 4,
-  },
-  scoreCard: {
-    flexDirection: 'row',
-    padding: 20,
-    borderRadius: 22,
-    backgroundColor: '#0f172a',
-    borderWidth: 1,
-    borderColor: '#1e293b',
-    alignItems: 'center',
-    shadowColor: '#0f172a',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
-    elevation: 4,
-  },
-  scoreLeft: {
-    flex: 1,
-    gap: 6,
-  },
-  scoreLabel: {
-    fontSize: 9,
-    fontWeight: '800',
-    color: '#475569',
-    textTransform: 'uppercase',
-    letterSpacing: 0.8,
-  },
-  statusBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 20,
-    alignSelf: 'flex-start',
-  },
-  statusDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-  },
-  statusText: {
-    fontSize: 11,
-    fontWeight: '800',
-  },
-  scoreValue: {
-    fontSize: 44,
-    fontWeight: '900',
-    color: '#ffffff',
-    letterSpacing: -2,
-    lineHeight: 46,
-  },
-  scoreRight: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingLeft: 14,
-  },
-  ringOuter: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    backgroundColor: 'rgba(255,255,255,0.03)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  ringInner: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    borderWidth: 3.5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 1,
-  },
-  ringVal: {
-    fontSize: 15,
-    fontWeight: '900',
-  },
-  ringUnit: {
-    fontSize: 9,
-    fontWeight: '600',
-    color: '#64748b',
-    textTransform: 'uppercase',
-  },
-  directivesCard: {
-    padding: 16,
-    borderRadius: 20,
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    marginTop: 14,
-    gap: 6,
-  },
-  directivesLabel: {
-    fontSize: 9,
-    fontWeight: '800',
-    color: '#94a3b8',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginLeft: 2,
-  },
-  directivesText: {
-    fontSize: 13.5,
-    fontWeight: '500',
-    color: '#334155',
-    lineHeight: 19,
-    paddingLeft: 2,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#f1f5f9',
-    marginVertical: 6,
-  },
-  followupRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: 2,
-  },
-  followupLabel: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#64748b',
-    marginLeft: 6,
-  },
-  followupValue: {
-    fontSize: 12,
-    fontWeight: '800',
-    color: '#1e293b',
-  },
-  sectionLabel: {
-    fontSize: 10,
-    fontWeight: '800',
-    color: '#94a3b8',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    marginTop: 24,
-    marginBottom: 10,
-    marginLeft: 2,
-  },
-  timelineCard: {
-    padding: 20,
-    borderRadius: 22,
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-  },
-  emptyBox: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  emptyText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#cbd5e1',
-  },
-  timeline: {
-    gap: 0,
-  },
-  timelineRow: {
-    flexDirection: 'row',
-    gap: 14,
-  },
-  timelineLeft: {
-    alignItems: 'center',
-    width: 20,
-  },
-  timelineLine: {
-    width: 2,
-    flex: 1,
-    backgroundColor: '#e2e8f0',
-    marginVertical: 4,
-  },
-  timelineLineCompleted: {
-    backgroundColor: '#10b981',
-  },
-  timelineBody: {
-    flex: 1,
-    paddingBottom: 20,
-    gap: 2,
-  },
-  timelineHeaderRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  timelineTitle: {
-    fontSize: 13.5,
-    fontWeight: '800',
-    color: '#64748b',
-  },
-  timelineTitleCompleted: {
-    color: '#1e293b',
-  },
-  timelineDate: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#94a3b8',
-  },
-  timelineDetail: {
-    fontSize: 11.5,
-    fontWeight: '500',
-    color: '#94a3b8',
-    lineHeight: 16,
-  },
-  emptyRxCard: {
     padding: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderStyle: 'dashed',
+    paddingBottom: 100,
   },
-  emptyRxText: {
-    fontSize: 12.5,
-    fontWeight: '600',
-    color: '#94a3b8',
-  },
-  rxList: {
-    gap: 10,
-  },
-  rxCard: {
-    flexDirection: 'row',
-    padding: 14,
-    borderRadius: 18,
+  statusCard: {
     backgroundColor: '#ffffff',
+    borderRadius: 20,
+    padding: 24,
+    marginBottom: 32,
     borderWidth: 1,
     borderColor: '#e2e8f0',
-    gap: 12,
-    alignItems: 'flex-start',
+    shadowColor: '#0f172a',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+    shadowRadius: 8,
+    elevation: 2,
   },
-  rxIconBox: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
+  implantCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    padding: 24,
+    marginBottom: 32,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+    shadowColor: '#0f172a',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  implantCardTitle: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#0f172a',
+  },
+  implantDetailsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginTop: 16,
+  },
+  implantDetailBox: {
+    width: '47%',
+    backgroundColor: '#f8fafc',
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#f1f5f9',
+  },
+  implantDetailLabel: {
+    fontSize: 12,
+    color: '#64748b',
+    marginBottom: 4,
+  },
+  implantDetailValue: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#0f172a',
+  },
+  statusRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statusIconBox: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     backgroundColor: '#ecfdf5',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  rxBody: {
+  statusInfo: {
     flex: 1,
-    gap: 2,
+    marginLeft: 16,
   },
-  rxTitle: {
-    fontSize: 14,
+  statusLabel: {
+    fontSize: 13,
+    color: '#64748b',
+    marginBottom: 4,
+  },
+  statusValue: {
+    fontSize: 20,
     fontWeight: '800',
-    color: '#1e293b',
   },
-  rxDosage: {
+  scoreCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    borderWidth: 4,
+    borderColor: '#10b981',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+  },
+  scoreText: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#0f172a',
+  },
+  scoreSub: {
+    fontSize: 10,
+    color: '#64748b',
+    fontWeight: '700',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#0f172a',
+    marginBottom: 20,
+  },
+  timelineContainer: {
+    paddingLeft: 12,
+  },
+  timelineItem: {
+    flexDirection: 'row',
+    marginBottom: 32,
+    position: 'relative',
+  },
+  timelineLine: {
+    position: 'absolute',
+    left: 11,
+    top: 24,
+    bottom: -32,
+    width: 2,
+    backgroundColor: '#10b981',
+  },
+  timelineDot: {
+    width: 24,
+    height: 24,
+    backgroundColor: '#ffffff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  timelineDotActive: {
+    // handled by icon
+  },
+  timelineDotCurrent: {
+    // handled by icon
+  },
+  timelineDotFuture: {
+    // handled by icon
+  },
+  timelineContent: {
+    flex: 1,
+    marginLeft: 20,
+  },
+  timelineTime: {
     fontSize: 12,
     fontWeight: '700',
+    color: '#64748b',
+    marginBottom: 4,
+  },
+  timelineTimeFuture: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#94a3b8',
+    marginBottom: 4,
+  },
+  timelineTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#0f172a',
+    marginBottom: 12,
+  },
+  timelineTitleFuture: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#94a3b8',
+    marginBottom: 12,
+  },
+  timelineCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+  },
+  docRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    gap: 8,
+  },
+  docText: {
+    fontSize: 13,
+    fontWeight: '600',
     color: '#475569',
   },
-  rxInstruct: {
-    fontSize: 11.5,
-    fontWeight: '500',
-    color: '#64748b',
-    marginTop: 2,
+  noteText: {
+    fontSize: 14,
+    color: '#475569',
+    lineHeight: 22,
   },
-  rxDoctor: {
-    fontSize: 10,
+  xrayImage: {
+    width: '100%',
+    height: 120,
+    borderRadius: 12,
+    marginTop: 12,
+    backgroundColor: '#f1f5f9',
+  },
+  prescriptionBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#faf5ff',
+    padding: 12,
+    borderRadius: 12,
+    marginTop: 12,
+    gap: 8,
+    borderWidth: 1,
+    borderColor: '#f3e8ff',
+  },
+  prescriptionText: {
+    fontSize: 13,
     fontWeight: '600',
-    color: '#94a3b8',
-    marginTop: 4,
+    color: '#7e22ce',
+  },
+  bookBtn: {
+    backgroundColor: '#f1f5f9',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    alignSelf: 'flex-start',
+  },
+  bookBtnText: {
+    color: '#475569',
+    fontSize: 13,
+    fontWeight: '700',
   },
 });
 
