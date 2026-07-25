@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Platform, Alert } from 'react-native';
 import { Search, Bell, MessageSquare, Sun, Moon, User } from 'lucide-react-native';
 import { useResponsive } from '../../hooks/useResponsive';
 import { useAuth } from '../../context/AuthContext';
@@ -29,17 +29,7 @@ const Navbar: React.FC<NavbarProps> = ({ activeRoute = 'Dashboard' }) => {
         </View>
       </View>
 
-      {/* Center: Global Search */}
-      <View style={styles.centerSection}>
-        <View style={styles.searchBox}>
-          <Search size={16} color="#64748B" />
-          <TextInput 
-            style={styles.searchInput} 
-            placeholder="Search patient, implant, appointment..." 
-            placeholderTextColor="#94A3B8"
-          />
-        </View>
-      </View>
+
 
       {/* Right: Actions & Profile */}
       <View style={styles.rightSection}>
@@ -47,23 +37,6 @@ const Navbar: React.FC<NavbarProps> = ({ activeRoute = 'Dashboard' }) => {
           {isDark ? <Sun size={18} color="#64748B" /> : <Moon size={18} color="#64748B" />}
         </TouchableOpacity>
         
-        <TouchableOpacity style={styles.iconBtn}>
-          <MessageSquare size={18} color="#64748B" />
-          <View style={styles.badge} />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.iconBtn}>
-          <Bell size={18} color="#64748B" />
-          <View style={styles.badge} />
-        </TouchableOpacity>
-
-        <View style={styles.divider} />
-
-        <TouchableOpacity style={styles.profileBtn}>
-          <View style={styles.avatar}>
-            <User size={16} color="#2563EB" />
-          </View>
-        </TouchableOpacity>
       </View>
     </View>
   );

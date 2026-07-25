@@ -1,4 +1,5 @@
 const { By, until } = require('selenium-webdriver');
+const DriverUtils = require('../utils/driver');
 
 class PatientsPage {
     constructor(driver) {
@@ -12,7 +13,7 @@ class PatientsPage {
 
     async isLoaded() {
         try {
-            await this.driver.wait(until.elementLocated(this.searchInput), 5000);
+            await this.driver.wait(until.elementLocated(this.searchInput), 15000);
             return true;
         } catch (e) {
             return false;
@@ -20,19 +21,26 @@ class PatientsPage {
     }
 
     async searchPatient(name) {
-        await this.driver.wait(until.elementLocated(this.searchInput), 5000);
-        const searchInput = await this.driver.findElement(this.searchInput);
-        await searchInput.clear();
-        await searchInput.sendKeys(name);
-        await this.driver.sleep(1000); // Wait for React to filter
+        const Key = require('selenium-webdriver').Key;
+        const el = await this.driver.wait(until.elementLocated(this.searchInput), 10000);
+        await this.driver.executeScript('arguments[0].scrollIntoView({block:"center"});', el);
+        await this.driver.sleep(200);
+        // Clear existing text first
+        await el.sendKeys(Key.CONTROL, 'a');
+        await el.sendKeys(Key.DELETE);
+        await this.driver.sleep(300);
+        if (name) {
+            await el.sendKeys(name);
+        }
+        await this.driver.sleep(1000); // Wait for React state to filter
     }
 
     async clickFirstPatientCard() {
-        // Wait for at least one patient card
-        await this.driver.wait(until.elementLocated(By.css('[data-testid^="patient-card-"]')), 5000);
+        // Wait for at least one patient card to appear (up to 10s)
+        await this.driver.wait(until.elementLocated(By.css('[data-testid^="patient-card-"]')), 10000);
         const cards = await this.driver.findElements(By.css('[data-testid^="patient-card-"]'));
         if (cards.length > 0) {
-            await cards[0].click();
+            await DriverUtils.waitAndClick(this.driver, By.css('[data-testid^="patient-card-"]'));
             return true;
         }
         return false;

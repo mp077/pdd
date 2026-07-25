@@ -10,7 +10,7 @@ exports.config = {
         platformName: 'Android',
         'appium:automationName': 'UiAutomator2',
         'appium:deviceName': 'emulator-5554',
-        'appium:appPackage': 'com.dentpulseai',
+        'appium:appPackage': 'com.mann1090.dentpulseai',
         'appium:appActivity': '.MainActivity',
         'appium:noReset': true,
         'appium:fullReset': false

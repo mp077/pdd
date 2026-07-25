@@ -60,28 +60,32 @@ const AdminNavigator = () => (
       name="Overview" 
       component={OverviewPage}
       options={{
-        tabBarIcon: ({ color }) => <Activity size={22} color={color} />
+        tabBarIcon: ({ color }) => <Activity size={22} color={color} />,
+        tabBarTestID: 'admin-nav-overview'
       }}
     />
     <Tab.Screen 
       name="Doctors" 
       component={DoctorsNavigator}
       options={{
-        tabBarIcon: ({ color }) => <Users size={22} color={color} />
+        tabBarIcon: ({ color }) => <Users size={22} color={color} />,
+        tabBarTestID: 'admin-nav-doctors'
       }}
     />
     <Tab.Screen 
       name="Approvals" 
       component={ApprovalsNavigator}
       options={{
-        tabBarIcon: ({ color }) => <ShieldAlert size={22} color={color} />
+        tabBarIcon: ({ color }) => <ShieldAlert size={22} color={color} />,
+        tabBarTestID: 'admin-nav-pending'
       }}
     />
     <Tab.Screen 
       name="Security" 
       component={SecurityPage}
       options={{
-        tabBarIcon: ({ color }) => <History size={22} color={color} />
+        tabBarIcon: ({ color }) => <History size={22} color={color} />,
+        tabBarTestID: 'admin-nav-security'
       }}
     />
   </Tab.Navigator>

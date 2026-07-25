@@ -448,11 +448,11 @@ const Monitoring: React.FC = () => {
               <View style={styles.inputGrid}>
                 <View style={styles.inputCol}>
                   <Text style={styles.inputLabel}>ISQ Stability Score</Text>
-                  <TextInput style={styles.textInput} keyboardType="numeric" value={isqScore} onChangeText={setIsqScore} placeholder="e.g. 75" />
+                  <TextInput testID="monitoring-isq-input" style={styles.textInput} keyboardType="numeric" value={isqScore} onChangeText={setIsqScore} placeholder="e.g. 75" />
                 </View>
                 <View style={styles.inputCol}>
                   <Text style={styles.inputLabel}>Bone Level Loss (mm)</Text>
-                  <TextInput style={styles.textInput} keyboardType="numeric" value={boneLevel} onChangeText={setBoneLevel} placeholder="e.g. 0.5" />
+                  <TextInput testID="monitoring-bone-input" style={styles.textInput} keyboardType="numeric" value={boneLevel} onChangeText={setBoneLevel} placeholder="e.g. 0.5" />
                 </View>
               </View>
 
@@ -541,9 +541,9 @@ const Monitoring: React.FC = () => {
 
           {/* RIGHT: SVM Prediction & Trigger Completed */}
           <View style={!isMobile ? { flex: 0.9 } : { marginTop: 16 }}>
-            <TouchableOpacity style={[styles.primaryButton, loading && { opacity: 0.7 }]} onPress={handleLog} disabled={loading || analyzingScan}>
+            <TouchableOpacity testID="monitoring-log-btn" style={[styles.primaryButton, loading && { opacity: 0.7 }]} onPress={handleLog} disabled={loading || analyzingScan}>
               <Activity size={18} color="#fff" />
-              <Text style={styles.buttonText}>{loading ? 'Calculating Risk...' : 'Log Status & Analyze'}</Text>
+              <Text testID="monitoring-log-btn-text" style={styles.buttonText}>{loading ? 'Calculating Risk...' : 'Log Status & Analyze'}</Text>
             </TouchableOpacity>
 
             {logResults && (
@@ -589,6 +589,7 @@ const Monitoring: React.FC = () => {
 
             {/* Completed Toggle Button */}
             <TouchableOpacity 
+              testID="monitoring-completed-btn"
               style={styles.completedBtn} 
               onPress={() => setIsCompletedMode(true)}
             >

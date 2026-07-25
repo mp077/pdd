@@ -12,7 +12,9 @@
       "node",
       "react",
       "react-native"
-    ]
+    ],
+    "jsx": "react",
+    "esModuleInterop": true
   },
   "include": [
     "**/*.ts",

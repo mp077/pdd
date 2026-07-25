@@ -1,29 +1,24 @@
 describe('DentPulse Mobile Authentication', () => {
     it('[TC_MOB_001] should successfully login as a Doctor', async function () {
-        // Use accessibility ids created earlier
+        // Wait for the app to load
+        await driver.pause(3000); 
+
+        // Use accessibility ids created earlier mapped to data-testid in React Native
         const emailInput = await $('~email-input');
-        if(await emailInput.isExisting()) {
-             await emailInput.setValue('doctor@dentpulse.com');
-        } else {
-             // Fallback to android specific xpath for Expo apps
-             const input = await $('//android.widget.EditText[@text="Email"]');
-             await input.setValue('doctor@dentpulse.com');
-        }
+        await emailInput.waitForExist({ timeout: 15000 });
+        await emailInput.setValue('m@p.com');
         
-        const passwordInput = await $('//android.widget.EditText[contains(@text, "Password") or @password="true"]');
-        await passwordInput.setValue('password123');
+        const passwordInput = await $('~password-input');
+        await passwordInput.waitForExist({ timeout: 5000 });
+        await passwordInput.setValue('123456');
 
-        const loginBtn = await $('~Login Button');
-        if(await loginBtn.isExisting()) {
-             await loginBtn.click();
-        } else {
-             const btn = await $('//android.widget.TextView[@text="Sign In"]/..');
-             await btn.click();
-        }
+        const loginBtn = await $('~login-button');
+        await loginBtn.waitForExist({ timeout: 5000 });
+        await loginBtn.click();
 
-        // Validate we reached the dashboard
-        const dashboardHeader = await $('//android.widget.TextView[contains(@text, "Welcome back")]');
-        await dashboardHeader.waitForExist({ timeout: 15000 });
-        expect(await dashboardHeader.isExisting()).toBe(true);
+        // Validate we reached the dashboard by checking for a dashboard specific element
+        const dashboardNav = await $('~nav-dashboard');
+        await dashboardNav.waitForExist({ timeout: 15000 });
+        expect(await dashboardNav.isExisting()).toBe(true);
     });
 });

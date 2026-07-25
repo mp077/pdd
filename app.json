@@ -1,20 +1,27 @@
 {
-  "plugins": [
-    "expo-router"
-  ],
-  "extra": {
-    "router": {},
-    "eas": {
-      "projectId": "ddf12407-b288-496b-9ec0-e063864e9e70"
+  "expo": {
+    "name": "DentPulse AI",
+    "slug": "dentpulse-ai",
+    "version": "1.0.0",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "ddf12407-b288-496b-9ec0-e063864e9e70"
+      }
+    },
+    "owner": "mann1090",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/ddf12407-b288-496b-9ec0-e063864e9e70"
+    },
+    "android": {
+      "package": "com.mann1090.dentpulseai"
+    },
+    "ios": {},
+    "web": {
+      "bundler": "metro"
     }
-  },
-  "owner": "mann1090",
-  "runtimeVersion": {
-    "policy": "appVersion"
-  },
-  "updates": {
-    "url": "https://u.expo.dev/ddf12407-b288-496b-9ec0-e063864e9e70"
-  },
-  "android": {},
-  "ios": {}
+  }
 }

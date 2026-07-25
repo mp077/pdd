@@ -26,6 +26,7 @@ const DesktopTopBar = () => {
         {navItems.map((item) => (
           <TouchableOpacity 
             key={item.name} 
+            testID={`nav-${item.name.toLowerCase()}`}
             style={styles.navItem} 
             onPress={() => navigation.navigate(item.route)}
           >
@@ -36,13 +37,8 @@ const DesktopTopBar = () => {
       </View>
 
       <View style={styles.right}>
-        <TouchableOpacity style={styles.iconBtn}>
-          <Search size={20} color="#64748b" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.iconBtn}>
-          <Bell size={20} color="#64748b" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.profileBtn} onPress={() => navigation.navigate('Profile')}>
+
+        <TouchableOpacity testID="nav-profile" style={styles.profileBtn} onPress={() => navigation.navigate('Profile')}>
           <Image 
             source={{ uri: 'https://ui-avatars.com/api/?name=Dr+Smith&background=eff6ff&color=2563eb' }}
             style={styles.avatar}

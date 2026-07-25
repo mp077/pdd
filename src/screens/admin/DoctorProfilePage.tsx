@@ -122,13 +122,13 @@ const DoctorProfilePage = () => {
 
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Uploaded Documents</Text>
-          <TouchableOpacity style={styles.docPreview}>
+          <View style={styles.docPreview}>
             <FileText size={24} color="#3b82f6" />
             <View style={styles.docTextWrap}>
               <Text style={styles.docTitle}>Medical License.pdf</Text>
               <Text style={styles.docSub}>Uploaded {new Date(profile.created_at).toLocaleDateString()}</Text>
             </View>
-          </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.card}>
@@ -142,11 +142,6 @@ const DoctorProfilePage = () => {
           <TouchableOpacity style={styles.actionButton} onPress={handleDeactivate}>
             <Trash2 size={18} color="#dc2626" />
             <Text style={[styles.actionButtonText, { color: '#dc2626' }]}>Deactivate Profile</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={styles.actionButton}>
-            <Lock size={18} color="#0f172a" />
-            <Text style={styles.actionButtonText}>Force Password Reset</Text>
           </TouchableOpacity>
         </View>
 

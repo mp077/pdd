@@ -229,10 +229,6 @@ const DesktopPatientProfileDoctor: React.FC = () => {
         </View>
 
         <View style={styles.bannerActions}>
-          <TouchableOpacity style={styles.editBtn}>
-            <Edit size={18} color="#64748b" style={{ marginRight: 8 }} />
-            <Text style={styles.editBtnText}>Edit Details</Text>
-          </TouchableOpacity>
         </View>
       </View>
 
@@ -262,23 +258,22 @@ const DesktopPatientProfileDoctor: React.FC = () => {
           {/* LEFT COLUMN: Inputs & Forms */}
           <View style={styles.leftCol}>
             
-            {activeTab === 'treatment' && (
-              <View style={styles.card}>
+            <View style={[styles.card, { display: activeTab === 'treatment' ? 'flex' : 'none' }]}>
                 <Text style={styles.sectionTitle}>Biomechanical Parameters</Text>
                 <Text style={styles.sectionSubtitle}>Enter the patient's CBCT scan data for AI analysis.</Text>
                 
                 <View style={styles.grid2}>
                   <View style={styles.inputBox}>
                     <Text style={styles.inputLabel}>Bone Height (mm)</Text>
-                    <TextInput style={styles.textInput} value={boneHeight} onChangeText={setBoneHeight} keyboardType="numeric" />
+                    <TextInput testID="bone-height-input" style={styles.textInput} value={boneHeight} onChangeText={setBoneHeight} keyboardType="numeric" />
                   </View>
                   <View style={styles.inputBox}>
                     <Text style={styles.inputLabel}>Bone Width (mm)</Text>
-                    <TextInput style={styles.textInput} value={boneWidth} onChangeText={setBoneWidth} keyboardType="numeric" />
+                    <TextInput testID="bone-width-input" style={styles.textInput} value={boneWidth} onChangeText={setBoneWidth} keyboardType="numeric" />
                   </View>
                   <View style={styles.inputBox}>
                     <Text style={styles.inputLabel}>Density (HU)</Text>
-                    <TextInput style={styles.textInput} value={density} onChangeText={setDensity} keyboardType="numeric" />
+                    <TextInput testID="bone-density-input" style={styles.textInput} value={density} onChangeText={setDensity} keyboardType="numeric" />
                   </View>
                   <View style={styles.inputBox}>
                     <Text style={styles.inputLabel}>Est. Bite Force (N)</Text>
@@ -286,7 +281,7 @@ const DesktopPatientProfileDoctor: React.FC = () => {
                   </View>
                 </View>
 
-                <TouchableOpacity style={styles.primaryBtn} onPress={handleGeneratePlan} disabled={svmLoading}>
+                <TouchableOpacity testID="generate-plan-btn" style={styles.primaryBtn} onPress={handleGeneratePlan} disabled={svmLoading}>
                   {svmLoading ? <ActivityIndicator color="#fff" /> : <Text style={styles.primaryBtnText}>Generate SVM AI Plan</Text>}
                 </TouchableOpacity>
 
@@ -295,10 +290,8 @@ const DesktopPatientProfileDoctor: React.FC = () => {
                   <Text style={styles.uploadText}>Or Upload CBCT DICOM File</Text>
                 </View>
               </View>
-            )}
 
-            {activeTab === 'monitoring' && (
-              <View style={styles.card}>
+            <View style={[styles.card, { display: activeTab === 'monitoring' ? 'flex' : 'none' }]}>
                 <Text style={styles.sectionTitle}>Post-Op Clinical Assessment</Text>
                 <Text style={styles.sectionSubtitle}>Enter observations for AI healing analysis.</Text>
                 
@@ -325,7 +318,6 @@ const DesktopPatientProfileDoctor: React.FC = () => {
                   {monitorLoading ? <ActivityIndicator color="#fff" /> : <Text style={styles.primaryBtnText}>Analyze Healing Progress</Text>}
                 </TouchableOpacity>
               </View>
-            )}
 
             {activeTab === 'history' && (
               <View style={styles.card}>

@@ -69,7 +69,7 @@ const Schedule: React.FC = () => {
       <View style={styles.statsRow}>
         <GlassCard style={styles.statCard}>
           <CalendarIcon size={20} color="#3b82f6" />
-          <Text style={styles.statVal}>{appointments.length}</Text>
+          <Text testID="schedule-total-count" style={styles.statVal}>{appointments.length}</Text>
           <Text style={styles.statLabel}>Total Appts</Text>
         </GlassCard>
         <GlassCard style={styles.statCard}>
@@ -87,7 +87,7 @@ const Schedule: React.FC = () => {
       <Text style={styles.sectionTitle}>Today's Appointments</Text>
       
       {/* Schedule List */}
-      <View style={styles.scheduleList}>
+      <View testID="schedule-list" style={styles.scheduleList}>
         {loading ? (
           <ActivityIndicator size="large" color="#2563eb" style={{ marginTop: 40 }} />
         ) : appointments.length === 0 ? (
@@ -98,7 +98,7 @@ const Schedule: React.FC = () => {
             const isVirtual = apt.consultation_type === 'virtual';
             
             return (
-              <View key={idx} style={styles.appointmentCard}>
+              <View key={idx} testID={`appointment-card-${apt.id}`} style={styles.appointmentCard}>
                 <View style={styles.timeCol}>
                   <Text style={styles.timeText}>{timeParts[0]}</Text>
                   <Text style={styles.amPmText}>{timeParts[1] || ''}</Text>

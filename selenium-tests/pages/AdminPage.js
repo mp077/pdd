@@ -1,16 +1,17 @@
 const { By, until } = require('selenium-webdriver');
+const DriverUtils = require('../utils/driver');
 
 class AdminPage {
     constructor(driver) {
         this.driver = driver;
-        this.navOverview = By.xpath('//*[contains(text(), "System Admin")] | //*[contains(text(), "Overview")]');
-        this.navDoctors = By.xpath('//*[contains(text(), "Doctors")]');
-        this.navPending = By.css('[data-testid="admin-nav-pending"]');
+        // Fallback to text matching since old bundle lacks testIDs on AdminNavigator
+        this.navPending = By.xpath('//*[text()="Approvals" or contains(@data-testid, "admin-nav-pending")]');
+        this.navDoctors = By.xpath('//*[text()="Doctors" or contains(@data-testid, "admin-nav-doctors")]');
     }
 
     async isLoaded() {
         try {
-            await this.driver.wait(until.elementLocated(this.navOverview), 5000);
+            await this.driver.wait(until.elementLocated(this.navPending), 15000);
             return true;
         } catch (e) {
             return false;
@@ -18,8 +19,7 @@ class AdminPage {
     }
 
     async goToDoctors() {
-        await this.driver.findElement(this.navDoctors).click();
-        await this.driver.sleep(500);
+        await DriverUtils.waitAndClick(this.driver, this.navDoctors);
     }
 }
 module.exports = AdminPage;

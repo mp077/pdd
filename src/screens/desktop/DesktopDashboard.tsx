@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform, Alert } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import { api } from '../../utils/api';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -134,9 +134,6 @@ const DesktopDashboard: React.FC = () => {
                     <Text style={{ fontWeight: '600', fontSize: 16, color: '#1e293b' }}>{appt.patient_name}</Text>
                     <Text style={{ color: '#64748b', fontSize: 14 }}>Waiting for {Math.floor(Math.random() * 20) + 5} mins</Text>
                   </View>
-                  <TouchableOpacity style={styles.actionBtn}>
-                    <Text style={styles.actionBtnText}>Call In</Text>
-                  </TouchableOpacity>
                 </View>
               ))
             )}
@@ -157,23 +154,6 @@ const DesktopDashboard: React.FC = () => {
             </TouchableOpacity>
           </View>
 
-          <Text style={[styles.sectionTitle, { marginTop: 32, marginBottom: 16 }]}>Recent Notifications</Text>
-          <View style={styles.notificationsCard}>
-            <View style={styles.notificationItem}>
-              <Bell size={16} color="#64748b" style={{ marginTop: 2 }} />
-              <View style={{ flex: 1, marginLeft: 12 }}>
-                <Text style={styles.notifTitle}>New Appointment Request</Text>
-                <Text style={styles.notifTime}>Just now</Text>
-              </View>
-            </View>
-            <View style={styles.notificationItem}>
-              <Clock size={16} color="#64748b" style={{ marginTop: 2 }} />
-              <View style={{ flex: 1, marginLeft: 12 }}>
-                <Text style={styles.notifTitle}>Patient John Doe checked in</Text>
-                <Text style={styles.notifTime}>10 mins ago</Text>
-              </View>
-            </View>
-          </View>
         </View>
       </View>
     </ScrollView>

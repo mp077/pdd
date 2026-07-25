@@ -13,7 +13,7 @@ describe('Admin Portal Tests', function () {
         adminPage = new AdminPage(driver);
         
         // Go directly to admin login if routed, or click the admin shield from main login
-        await driver.get('http://localhost:8081');
+        await driver.get('http://localhost:8082');
         
         // Wait for main login to load, then click Admin Shield
         const shieldBtn = await driver.wait(until.elementLocated(By.css('[data-testid="admin-shield-btn"]')), 5000);
@@ -24,13 +24,11 @@ describe('Admin Portal Tests', function () {
         await emailInput.sendKeys('admin@dentpulse.com');
         
         const pwdInput = await driver.findElement(By.css('[data-testid="admin-password-input"]'));
-        await pwdInput.sendKeys('123456');
+        await pwdInput.sendKeys('admin123');
         
         const loginBtn = await driver.findElement(By.css('[data-testid="admin-login-button"]'));
-        await loginBtn.click();
+        await DriverUtils.waitAndClick(driver, By.css('[data-testid="admin-login-button"]'));
         
-        // Wait longer for admin console to load (login API might be slow)
-        await driver.sleep(3000);
         await adminPage.isLoaded();
     });
 

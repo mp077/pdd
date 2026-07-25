@@ -119,11 +119,6 @@ const Dashboard: React.FC = () => {
             )}
             
           </View>
-          {appointments.length > 0 && (
-            <TouchableOpacity style={styles.viewAllBtn}>
-              <Text style={styles.viewAllText}>View All →</Text>
-            </TouchableOpacity>
-          )}
         </View>
 
         {/* CURRENT QUEUE */}
@@ -148,11 +143,6 @@ const Dashboard: React.FC = () => {
             )}
 
           </View>
-          {appointments.filter(a => a.status === 'pending').length > 0 && (
-            <TouchableOpacity style={styles.viewAllBtn}>
-              <Text style={styles.viewAllText}>View Queue →</Text>
-            </TouchableOpacity>
-          )}
         </View>
         
         <View style={{ height: 24 }} />

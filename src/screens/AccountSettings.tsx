@@ -10,20 +10,7 @@ const AccountSettings: React.FC = () => {
   const [isNotifications, setIsNotifications] = useState(true);
 
   const handleLogout = () => {
-    if (Platform.OS === 'web') {
-      if (window.confirm("Are you sure you want to sign out?")) {
-        logout();
-      }
-    } else {
-      Alert.alert(
-        "Sign Out",
-        "Are you sure you want to sign out?",
-        [
-          { text: "Cancel", style: "cancel" },
-          { text: "Sign Out", onPress: logout, style: "destructive" }
-        ]
-      );
-    }
+    logout();
   };
 
   const getInitials = (fullName: string) => {
@@ -39,8 +26,8 @@ const AccountSettings: React.FC = () => {
     }
   };
 
-  const renderSettingItem = (icon: any, label: string, value: string, showArrow: boolean = true) => (
-    <TouchableOpacity style={styles.settingItem}>
+  const renderSettingItem = (icon: any, label: string, value: string) => (
+    <View style={styles.settingItem}>
       <View style={styles.iconBox}>
         {React.createElement(icon, { size: 18, color: '#64748b' })}
       </View>
@@ -48,8 +35,7 @@ const AccountSettings: React.FC = () => {
         <Text style={styles.settingLabel}>{label}</Text>
         <Text style={styles.settingValue}>{value}</Text>
       </View>
-      {showArrow && <ChevronRight size={18} color="#cbd5e1" />}
-    </TouchableOpacity>
+    </View>
   );
 
   return (
@@ -62,9 +48,6 @@ const AccountSettings: React.FC = () => {
               {user?.name ? getInitials(user.name) : 'DR'}
             </Text>
           </View>
-          <TouchableOpacity style={styles.cameraBtn}>
-            <Camera size={14} color="#fff" />
-          </TouchableOpacity>
         </View>
         <Text style={styles.name}>{user?.name ? `Dr. ${user.name}` : 'Doctor Profile'}</Text>
         <Text style={styles.specialty}>{user?.specialization || 'General Practitioner'}</Text>
@@ -102,7 +85,9 @@ const AccountSettings: React.FC = () => {
             </View>
             <Switch 
               value={isNotifications} 
-              onValueChange={setIsNotifications}
+              onValueChange={(val) => {
+                setIsNotifications(val);
+              }}
               trackColor={{ false: '#e2e8f0', true: '#3b82f6' }}
             />
           </View>
@@ -116,7 +101,9 @@ const AccountSettings: React.FC = () => {
             </View>
             <Switch 
               value={isDarkMode} 
-              onValueChange={setIsDarkMode}
+              onValueChange={(val) => {
+                setIsDarkMode(val);
+              }}
               trackColor={{ false: '#e2e8f0', true: '#1e293b' }}
             />
           </View>

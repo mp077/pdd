@@ -141,7 +141,7 @@ export default function Login({ onNavigateToRegister, onNavigateToForgotPassword
           </View>
 
           {/* Error */}
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+          {error ? <Text testID="login-error-text" style={styles.errorText}>{error}</Text> : null}
 
           {/* Submit */}
           <TouchableOpacity 

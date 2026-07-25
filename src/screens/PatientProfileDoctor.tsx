@@ -219,30 +219,30 @@ const PatientProfileDoctor: React.FC = () => {
       
       {/* COMPACT TOP NAVIGATION */}
       <View style={styles.topNavBar}>
-        <TouchableOpacity style={styles.navBackBtn} onPress={() => navigation.goBack()}>
+        <TouchableOpacity testID="profile-back-btn" style={styles.navBackBtn} onPress={() => navigation.goBack()}>
           <ChevronLeft size={24} color="#0f172a" />
         </TouchableOpacity>
-        <Text style={styles.navTitle}>Patient Profile</Text>
+        <Text testID="profile-title" style={styles.navTitle}>Patient Profile</Text>
         <View style={{ width: 24 }} />
       </View>
 
       <ScrollView style={styles.scrollContent} contentContainerStyle={styles.scrollPadding} showsVerticalScrollIndicator={false}>
         
         {/* COMPACT PATIENT CARD */}
-        <View style={styles.patientCard}>
+        <View testID="patient-profile-card" style={styles.patientCard}>
           <View style={styles.patientCardMain}>
             <View style={styles.avatarBox}>
               <Text style={styles.avatarLetter}>{patient.full_name[0]}</Text>
             </View>
             <View style={styles.patientInfo}>
-              <Text style={styles.patientNameText}>{patient.full_name}</Text>
-              <Text style={styles.patientMetaText}>
+              <Text testID="patient-profile-name" style={styles.patientNameText}>{patient.full_name}</Text>
+              <Text testID="patient-profile-meta" style={styles.patientMetaText}>
                 {patient.patient_id || `PID-${patient.id}`} • {patient.age || 40}Y • {patient.gender || 'M'} • {patient.implant_site}
               </Text>
             </View>
             
             <View style={[styles.statusBadgeCompact, { backgroundColor: treatmentApproved ? '#dcfce7' : '#f1f5f9' }]}>
-              <Text style={[styles.statusBadgeText, { color: treatmentApproved ? '#166534' : '#475569' }]}>
+              <Text testID="patient-status-badge" style={[styles.statusBadgeText, { color: treatmentApproved ? '#166534' : '#475569' }]}>
                 {treatmentApproved ? 'Planned' : 'Initial'}
               </Text>
             </View>
@@ -263,6 +263,7 @@ const PatientProfileDoctor: React.FC = () => {
           ].map(tab => (
             <TouchableOpacity 
               key={tab.id}
+              testID={`profile-tab-${tab.id}`}
               style={[styles.tabButton, activeTab === tab.id && styles.tabButtonActive]}
               onPress={() => setActiveTab(tab.id as any)}
             >
@@ -303,8 +304,7 @@ const PatientProfileDoctor: React.FC = () => {
           )}
 
           {/* ---------------- TREATMENT PLAN TAB ---------------- */}
-          {activeTab === 'treatment' && (
-            <View>
+          <View style={{ display: activeTab === 'treatment' ? 'flex' : 'none' }}>
               {!planResults ? (
                 <View style={styles.cardBase}>
                   <View style={styles.formGrid}>
@@ -387,11 +387,9 @@ const PatientProfileDoctor: React.FC = () => {
                 </View>
               )}
             </View>
-          )}
 
           {/* ---------------- CLINICAL FOLLOW-UP TAB ---------------- */}
-          {activeTab === 'monitoring' && (
-            <View>
+          <View style={{ display: activeTab === 'monitoring' ? 'flex' : 'none' }}>
               <View style={styles.cardBase}>
                 <View style={styles.inputGroup}>
                   <Text style={styles.inputLabel}>ISQ Score</Text>
@@ -519,7 +517,6 @@ const PatientProfileDoctor: React.FC = () => {
                 </View>
               )}
             </View>
-          )}
 
         </View>
       </ScrollView>

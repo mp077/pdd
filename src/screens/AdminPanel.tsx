@@ -143,22 +143,28 @@ const AdminPanel: React.FC = () => {
       {/* Admin Workspace Tabs */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabBar}>
         <TouchableOpacity
+          testID="admin-nav-pending"
           style={[styles.tabItem, activeTab === 'pending' && styles.tabItemActive]}
           onPress={() => setActiveTab('pending')}
           activeOpacity={0.7}
         >
-          <ShieldAlert size={16} color={activeTab === 'pending' ? '#3b82f6' : '#64748b'} />
+          <View>
+            <ShieldAlert size={16} color={activeTab === 'pending' ? '#3b82f6' : '#64748b'} />
+          </View>
           <Text style={[styles.tabText, activeTab === 'pending' && styles.tabTextActive]}>
             Pending Approvals ({pendingDoctors.length})
           </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
+          testID="admin-nav-doctors"
           style={[styles.tabItem, activeTab === 'approved' && styles.tabItemActive]}
           onPress={() => setActiveTab('approved')}
           activeOpacity={0.7}
         >
-          <Users size={16} color={activeTab === 'approved' ? '#3b82f6' : '#64748b'} />
+          <View>
+            <Users size={16} color={activeTab === 'approved' ? '#3b82f6' : '#64748b'} />
+          </View>
           <Text style={[styles.tabText, activeTab === 'approved' && styles.tabTextActive]}>
             Approved Network ({approvedDoctors.length})
           </Text>

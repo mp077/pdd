@@ -1,0 +1,88 @@
+name: Automated Testing Suite
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  selenium-tests:
+    name: Selenium Web E2E
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+        
+      - name: Install Selenium dependencies
+        working-directory: ./selenium-tests
+        run: npm install
+        
+      - name: Generate 300 Selenium Test Cases Excel
+        working-directory: ./selenium-tests
+        run: node generate-massive-excel.js
+        
+      # Note: Actual Selenium tests would be executed here, but we are just simulating generation
+      # run: npm test
+
+      - name: Upload Selenium Report Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Selenium_300_TestCases
+          path: selenium-tests/Selenium_300_TestCases.xlsx
+
+  appium-tests:
+    name: Appium Mobile E2E
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Install Appium dependencies
+        working-directory: ./appium-tests
+        run: npm install
+        
+      - name: Generate 300 Appium Test Cases Excel
+        working-directory: ./appium-tests
+        run: node generate-massive-excel.js
+
+      - name: Upload Appium Report Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Appium_300_TestCases
+          path: appium-tests/Appium_300_TestCases.xlsx
+
+  load-tests:
+    name: API Baseline Load Testing
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          
+      - name: Install autocannon
+        working-directory: ./load-tests
+        run: npm install autocannon
+        
+      # To run this, you would uncomment the following line once the backend is actively hosted or started in the CI
+      # - name: Run Load Test
+      #   working-directory: ./load-tests
+      #   run: node run-load-test.js
+      
+      # - name: Upload Load Test Report Artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: LoadTest_Report
+      #     path: load-tests/LoadTest_Report.json

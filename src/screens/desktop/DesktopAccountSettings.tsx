@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Alert, Platform } from 'react-native';
 import { User, Mail, Phone, Award, Building2, ChevronRight, Camera, Bell, Moon, LogOut, Edit } from 'lucide-react-native';
 import { useAuth } from '../../context/AuthContext';
 
@@ -9,14 +9,7 @@ const DesktopAccountSettings: React.FC = () => {
   const [isNotifications, setIsNotifications] = useState(true);
 
   const handleLogout = () => {
-    Alert.alert(
-      "Sign Out",
-      "Are you sure you want to sign out?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Sign Out", onPress: logout, style: "destructive" }
-      ]
-    );
+    logout();
   };
 
   const getInitials = (fullName: string) => {
@@ -32,7 +25,7 @@ const DesktopAccountSettings: React.FC = () => {
     }
   };
 
-  const renderSettingItem = (icon: any, label: string, value: string, showArrow: boolean = true) => (
+  const renderSettingItem = (icon: any, label: string, value: string) => (
     <View style={styles.settingItem}>
       <View style={styles.iconBox}>
         {React.createElement(icon, { size: 18, color: '#64748b' })}
@@ -41,7 +34,6 @@ const DesktopAccountSettings: React.FC = () => {
         <Text style={styles.settingLabel}>{label}</Text>
         <Text style={styles.settingValue}>{value}</Text>
       </View>
-      {showArrow && <ChevronRight size={18} color="#cbd5e1" />}
     </View>
   );
 
@@ -57,19 +49,12 @@ const DesktopAccountSettings: React.FC = () => {
                   {user?.name ? getInitials(user.name) : 'DR'}
                 </Text>
               </View>
-              <TouchableOpacity style={styles.cameraBtn}>
-                <Camera size={14} color="#fff" />
-              </TouchableOpacity>
             </View>
             <View style={{ marginLeft: 24 }}>
               <Text style={styles.name}>{user?.name ? `Dr. ${user.name}` : 'Doctor Profile'}</Text>
               <Text style={styles.specialty}>{user?.specialization || 'General Practitioner'} • {user?.clinic_name || 'DentPulse Clinical'}</Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.editBtn}>
-            <Edit size={18} color="#64748b" style={{ marginRight: 8 }} />
-            <Text style={styles.editBtnText}>Edit Profile</Text>
-          </TouchableOpacity>
         </View>
       </View>
 
@@ -115,7 +100,9 @@ const DesktopAccountSettings: React.FC = () => {
                   </View>
                   <Switch 
                     value={isNotifications} 
-                    onValueChange={setIsNotifications}
+                    onValueChange={(val) => {
+                      setIsNotifications(val);
+                    }}
                     trackColor={{ false: '#e2e8f0', true: '#3b82f6' }}
                   />
                 </View>
@@ -130,7 +117,9 @@ const DesktopAccountSettings: React.FC = () => {
                   </View>
                   <Switch 
                     value={isDarkMode} 
-                    onValueChange={setIsDarkMode}
+                    onValueChange={(val) => {
+                      setIsDarkMode(val);
+                    }}
                     trackColor={{ false: '#e2e8f0', true: '#1e293b' }}
                   />
                 </View>

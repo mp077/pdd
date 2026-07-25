@@ -78,12 +78,7 @@ const MobileNavigator = () => {
         fontWeight: '800',
         color: '#1e293b',
       },
-      headerRight: () => (
-        <View style={styles.headerActions}>
-          <TouchableOpacity style={styles.headerIcon}><Search size={20} color="#64748b" /></TouchableOpacity>
-          <TouchableOpacity style={styles.headerIcon}><Bell size={20} color="#64748b" /></TouchableOpacity>
-        </View>
-      ),
+      headerRight: () => null,
       headerLeft: () => (
         <View style={{ width: 16 }} />
       ),
@@ -99,7 +94,7 @@ const MobileNavigator = () => {
           </View>
         ),
         tabBarLabel: 'Dashboard',
-        tabBarTestID: 'nav-dashboard'
+        tabBarAccessibilityLabel: 'nav-dashboard',
       }} 
     />
     <Tab.Screen 
@@ -113,7 +108,7 @@ const MobileNavigator = () => {
           </View>
         ),
         tabBarLabel: 'Patients',
-        tabBarTestID: 'nav-patients'
+        tabBarAccessibilityLabel: 'nav-patients',
       }} 
     />
     <Tab.Screen 
@@ -126,7 +121,7 @@ const MobileNavigator = () => {
           </View>
         ),
         tabBarLabel: 'Schedule',
-        tabBarTestID: 'nav-schedule'
+        tabBarAccessibilityLabel: 'nav-schedule',
       }} 
     />
     <Tab.Screen 
@@ -139,7 +134,7 @@ const MobileNavigator = () => {
           </View>
         ),
         tabBarLabel: 'Prescription',
-        tabBarTestID: 'nav-prescription'
+        tabBarAccessibilityLabel: 'nav-prescription',
       }} 
     />
     <Tab.Screen 
@@ -152,7 +147,7 @@ const MobileNavigator = () => {
           </View>
         ),
         tabBarLabel: 'Profile',
-        tabBarTestID: 'nav-profile'
+        tabBarAccessibilityLabel: 'nav-profile',
       }} 
     />
   </Tab.Navigator>

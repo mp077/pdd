@@ -73,9 +73,7 @@ const AdminConsole: React.FC = () => {
             <Text style={styles.searchTextPlaceholder}>Global search (/) ...</Text>
           </View>
           
-          <TouchableOpacity style={styles.iconBtn}>
-            <Bell size={18} color="#475569" />
-          </TouchableOpacity>
+
 
           <TouchableOpacity style={styles.profileBtn} onPress={logout}>
             <View style={styles.avatarMini}>

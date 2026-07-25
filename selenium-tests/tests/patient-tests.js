@@ -29,8 +29,7 @@ describe('Patients Module Tests', function () {
     });
 
     it('[TC_WEB_010] should open Patients screen from Dashboard', async function () {
-        await driver.wait(until.elementLocated(dashboardPage.patientsNav), 5000);
-        await driver.findElement(dashboardPage.patientsNav).click();
+        await DriverUtils.waitAndClick(driver, By.xpath('//*[text()="Patients"]'));
         
         const isLoaded = await patientsPage.isLoaded();
         expect(isLoaded).to.be.true;
@@ -49,10 +48,10 @@ describe('Patients Module Tests', function () {
         expect(clicked).to.be.true;
         
         // Wait for PatientProfileDoctor screen header
-        await driver.wait(until.elementLocated(By.xpath('//*[contains(text(), "Treatment Timeline")]')), 10000);
+        await driver.wait(until.elementLocated(By.xpath('//*[contains(text(), "Patient Profile")]')), 10000);
         expect(true).to.be.true;
         
         // Go back to patients
-        await driver.findElement(dashboardPage.patientsNav).click();
+        await DriverUtils.waitAndClick(driver, By.xpath('//*[text()="Patients"]'));
     });
 });

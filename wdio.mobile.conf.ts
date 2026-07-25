@@ -27,7 +27,7 @@ export const config: Options.Testrunner = {
         // Since we are using React Native/Expo, we need to launch the Expo app or a built APK
         // For local development with Expo, you can either build an APK or run within the Expo Go app.
         // Assuming we have a built APK or we can use the app package if installed
-        'appium:appPackage': 'com.dentpulseai', // Replace with your actual package name if different
+        'appium:appPackage': 'com.mann1090.dentpulseai', // Replace with your actual package name if different
         'appium:appActivity': '.MainActivity',
         'appium:noReset': true,
         'appium:fullReset': false

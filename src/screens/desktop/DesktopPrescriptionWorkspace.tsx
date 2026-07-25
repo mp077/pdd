@@ -388,6 +388,7 @@ const DesktopPrescriptionWorkspace: React.FC = () => {
             {/* Action Card */}
             <View style={styles.actionCard}>
               <TouchableOpacity 
+                testID="save-prescription-btn"
                 style={[styles.saveBtn, currentPrescription.length === 0 && styles.saveBtnDisabled]} 
                 disabled={currentPrescription.length === 0 || isSaving}
                 onPress={handleSavePrescription}

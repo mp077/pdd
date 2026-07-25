@@ -35,9 +35,6 @@ const DoctorsPage = () => {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.pageTitle}>Doctors</Text>
-        <TouchableOpacity style={styles.searchBtn}>
-          <Search size={20} color="#0f172a" />
-        </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.listContainer} showsVerticalScrollIndicator={false}>

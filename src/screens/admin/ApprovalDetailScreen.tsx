@@ -108,13 +108,13 @@ const ApprovalDetailScreen = () => {
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Verification Documents</Text>
           
-          <TouchableOpacity style={styles.docPreview}>
+          <View style={styles.docPreview}>
             <FileText size={24} color="#3b82f6" />
             <View style={styles.docTextWrap}>
               <Text style={styles.docTitle}>Medical License.pdf</Text>
               <Text style={styles.docSub}>Uploaded {new Date(doc.created_at).toLocaleDateString()}</Text>
             </View>
-          </TouchableOpacity>
+          </View>
         </View>
         
         <View style={styles.actionsBox}>
