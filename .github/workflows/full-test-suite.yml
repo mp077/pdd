@@ -19,7 +19,7 @@ jobs:
           node-version: '20'
       - name: Install Selenium dependencies
         working-directory: ./selenium-tests
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Generate 300 Selenium Test Cases Excel
         working-directory: ./selenium-tests
         run: node generate-massive-excel.js
@@ -40,7 +40,7 @@ jobs:
           node-version: '20'
       - name: Install Appium dependencies
         working-directory: ./appium-tests
-        run: npm install
+        run: npm install --legacy-peer-deps
       - name: Generate 300 Appium Test Cases Excel
         working-directory: ./appium-tests
         run: node generate-massive-excel.js
@@ -126,7 +126,7 @@ jobs:
           node-version: '20'
       - name: Install autocannon
         working-directory: ./load-tests
-        run: npm install autocannon
+        run: npm install --legacy-peer-deps autocannon
       - name: Start Mock Backend
         run: |
           mkdir -p backend
